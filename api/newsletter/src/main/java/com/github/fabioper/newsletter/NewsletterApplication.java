@@ -1,13 +1,13 @@
-package com.github.fabioper.newsletterapi;
+package com.github.fabioper.newsletter;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 @SpringBootApplication
-public class NewsletterApiApplication {
+public class NewsletterApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(NewsletterApiApplication.class, args);
+        SpringApplication.run(NewsletterApplication.class, args);
     }
 
 }

@@ -1,10 +1,10 @@
-package com.github.fabioper.newsletterapi;
+package com.github.fabioper.newsletter;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class NewsletterApiApplicationTests {
+class NewsletterApplicationTests {
 
     @Test
     void contextLoads() {
