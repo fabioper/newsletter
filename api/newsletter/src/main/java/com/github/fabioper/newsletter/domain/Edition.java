@@ -54,6 +54,11 @@ public class Edition {
         return publicationDate;
     }
 
+    public void updateNotes(List<Note> notes) {
+        this.notes.clear();
+        notes.forEach(this::assignNote);
+    }
+
     public void assignNote(Note note) {
         if (this.isPublished()) {
             throw new IllegalStateException("Cannot add new notes to a published edition");

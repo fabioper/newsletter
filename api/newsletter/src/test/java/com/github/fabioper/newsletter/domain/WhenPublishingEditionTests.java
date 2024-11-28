@@ -3,6 +3,8 @@ package com.github.fabioper.newsletter.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.List;
+
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -40,10 +42,12 @@ public class WhenPublishingEditionTests {
         var author = new Author();
         var editorial = new Editorial("Editorial");
 
-        edition.assignNote(author.createNote("Note 1", longContent, editorial));
-        edition.assignNote(author.createNote("Note 2", longContent, editorial));
-        edition.assignNote(author.createNote("Note 3", longContent, editorial));
-        edition.assignNote(author.createNote("Note 4", longContent, editorial));
+        edition.updateNotes(List.of(
+            author.createNote("Note 1", longContent, editorial),
+            author.createNote("Note 2", longContent, editorial),
+            author.createNote("Note 3", longContent, editorial),
+            author.createNote("Note 4", longContent, editorial)
+        ));
 
         assertThrows(IllegalStateException.class, edition::publish);
     }
