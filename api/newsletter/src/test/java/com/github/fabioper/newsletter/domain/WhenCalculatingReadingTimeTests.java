@@ -3,7 +3,7 @@ package com.github.fabioper.newsletter.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static com.github.fabioper.newsletter.testdata.ReadingTimeTestData.*;
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("When calculating reading time")

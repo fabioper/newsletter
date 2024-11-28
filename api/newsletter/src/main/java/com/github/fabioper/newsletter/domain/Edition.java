@@ -6,19 +6,23 @@ import java.util.List;
 import java.util.UUID;
 
 public class Edition {
+    public static final int MAX_TOTAL_READING_TIME_IN_MINUTES = 8;
+
     private final UUID id;
-    private Editor editor;
+    private final Editor editor;
     private Status status;
     private Category category;
     private final List<Note> notes = new ArrayList<>();
     private LocalDateTime publicationDate;
 
     public Edition(Editor editor, Category category) {
-        if (editor == null)
+        if (editor == null) {
             throw new IllegalArgumentException("editor should not be null");
+        }
 
-        if (category == null)
+        if (category == null) {
             throw new IllegalArgumentException("category should not be null");
+        }
 
         this.id = UUID.randomUUID();
         this.editor = editor;
@@ -63,11 +67,25 @@ public class Edition {
     }
 
     public void publish() {
-        if (this.isPublished()) {
-            throw new IllegalStateException("Cannot publish an edition with published status");
+        if (isPublished()) {
+            throw new IllegalStateException("Edition has already been published");
+        }
+
+        if (totalReadingTimeExceedsLimit()) {
+            throw new IllegalStateException(
+                "Total reading time exceeds limit of %d minutes".formatted(MAX_TOTAL_READING_TIME_IN_MINUTES)
+            );
         }
 
         this.status = Status.PUBLISHED;
         this.publicationDate = LocalDateTime.now();
+    }
+
+    private boolean totalReadingTimeExceedsLimit() {
+        return getTotalReadingTime() > MAX_TOTAL_READING_TIME_IN_MINUTES;
+    }
+
+    private int getTotalReadingTime() {
+        return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
     }
 }

@@ -3,6 +3,7 @@ package com.github.fabioper.newsletter.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When publishing edition")
@@ -26,6 +27,23 @@ public class WhenPublishingEditionTests {
         var edition = editor.createEdition(new Category("Category"));
 
         edition.publish();
+
+        assertThrows(IllegalStateException.class, edition::publish);
+    }
+
+    @Test
+    @DisplayName("should throw exception if total reading time is greater than 8 minutes")
+    void shouldThrowIfTotalReadingTimeIsGreaterThan8Minutes() {
+        var editor = new Editor();
+        var edition = editor.createEdition(new Category("Category"));
+
+        var author = new Author();
+        var editorial = new Editorial("Editorial");
+
+        edition.assignNote(author.createNote("Note 1", longContent, editorial));
+        edition.assignNote(author.createNote("Note 2", longContent, editorial));
+        edition.assignNote(author.createNote("Note 3", longContent, editorial));
+        edition.assignNote(author.createNote("Note 4", longContent, editorial));
 
         assertThrows(IllegalStateException.class, edition::publish);
     }

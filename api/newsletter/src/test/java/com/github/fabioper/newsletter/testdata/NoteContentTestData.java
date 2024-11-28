@@ -1,6 +1,6 @@
 package com.github.fabioper.newsletter.testdata;
 
-public class ReadingTimeTestData {
+public class NoteContentTestData {
     public static final String longContent = """
         Lorem ipsum dolor sit amet, consectetur adipiscing elit. Aenean consequat diam eu tempor tincidunt. Quisque semper, sapien a consectetur consectetur, odio risus commodo turpis, non volutpat eros purus in nisl. Curabitur ut nunc vitae leo cursus finibus. Vestibulum a mi euismod, elementum elit sed, pharetra enim. Ut ut metus sed dolor finibus eleifend quis non orci. Integer malesuada sit amet nunc sodales viverra. Nam at mauris consequat, eleifend libero et, gravida risus. Sed luctus malesuada diam sit amet viverra. Donec enim ex, ornare id elementum at, maximus sed tortor.
         
