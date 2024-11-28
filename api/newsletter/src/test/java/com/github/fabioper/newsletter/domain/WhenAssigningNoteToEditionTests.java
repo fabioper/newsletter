@@ -38,4 +38,18 @@ public class WhenAssigningNoteToEditionTests {
 
         assertThrows(IllegalStateException.class, () -> edition.assignNote(note));
     }
+
+    @Test
+    @DisplayName("should throw exception if note is already assigned to edition")
+    void shouldThrowIfNoteIsAlreadyAssigned() {
+        var editor = new Editor();
+        var edition = editor.createEdition(new Category("Category"));
+
+        var author = new Author();
+        var editorial = new Editorial("Editorial");
+        var note = author.createNote("Title", "Content", editorial);
+        edition.assignNote(note);
+
+        assertThrows(IllegalArgumentException.class, () -> edition.assignNote(note));
+    }
 }

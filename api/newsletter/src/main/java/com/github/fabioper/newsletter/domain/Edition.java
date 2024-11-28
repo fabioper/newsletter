@@ -60,11 +60,23 @@ public class Edition {
     }
 
     public void assignNote(Note note) {
-        if (this.isPublished()) {
+        if (isPublished()) {
             throw new IllegalStateException("Cannot add new notes to a published edition");
         }
 
+        if (this.notes.contains(note)) {
+            throw new IllegalArgumentException("Note is alread assigned to this edition");
+        }
+
         this.notes.add(note);
+    }
+
+    public void unassignNote(Note note) {
+        if (!notes.contains(note)) {
+            throw new IllegalArgumentException("Note is not assigned to this edition");
+        }
+
+        this.notes.remove(note);
     }
 
     public boolean isPublished() {
@@ -93,4 +105,5 @@ public class Edition {
     private int getTotalReadingTime() {
         return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
     }
+
 }
