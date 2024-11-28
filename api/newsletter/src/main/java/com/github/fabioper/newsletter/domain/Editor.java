@@ -13,7 +13,7 @@ public class Editor {
         return id;
     }
 
-    public Edition createEdition(Category category) {
-        return new Edition(this, category);
+    public Edition createEdition(String title, Category category) {
+        return new Edition(title, this, category);
     }
 }

@@ -13,7 +13,7 @@ public class WhenUnassigningNotesTests {
     @DisplayName("should remove it if note is assigned to edition")
     void shouldRemoveNoteIfPresent() {
         var editor = new Editor();
-        var edition = editor.createEdition(new Category("Category"));
+        var edition = editor.createEdition("Edition", new Category("Category"));
 
         var author = new Author();
         var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
@@ -26,13 +26,14 @@ public class WhenUnassigningNotesTests {
         assertEquals(1, edition.getNotes().size());
         assertEquals(note1, edition.getNotes().get(0));
         assertFalse(edition.getNotes().contains(note2));
+        assertNull(note2.getEdition());
     }
 
     @Test
     @DisplayName("should throw exception if note is not assigned to edition")
     void shouldThrowIfNotPresent() {
         var editor = new Editor();
-        var edition = editor.createEdition(new Category("Category"));
+        var edition = editor.createEdition("Edition", new Category("Category"));
 
         var author = new Author();
         var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
@@ -41,5 +42,6 @@ public class WhenUnassigningNotesTests {
         edition.assignNote(note1);
 
         assertThrows(IllegalArgumentException.class, () -> edition.unassignNote(note2));
+        assertNotEquals(edition, note2.getEdition());
     }
 }

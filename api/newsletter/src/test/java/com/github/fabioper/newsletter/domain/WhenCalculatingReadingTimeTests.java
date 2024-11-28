@@ -12,8 +12,8 @@ class WhenCalculatingReadingTimeTests {
     @Test
     @DisplayName("should get the correct number of minutes based on content")
     void shouldGetCorrectNumberOfMinutesBasedOnContent() {
-        assertEquals(4, ReadingTime.calculate(longContent).minutes());
-        assertEquals(1, ReadingTime.calculate(shortContent).minutes());
-        assertEquals(2, ReadingTime.calculate(mediumContent).minutes());
+        assertEquals(4, ReadingTime.from(longContent).minutes());
+        assertEquals(1, ReadingTime.from(shortContent).minutes());
+        assertEquals(2, ReadingTime.from(mediumContent).minutes());
     }
 }

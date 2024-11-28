@@ -14,13 +14,18 @@ public class Edition {
         new ExceedsReadingTimeLimitSpecification();
 
     private final UUID id;
+    private String title;
     private final Editor editor;
     private Status status;
     private Category category;
     private final List<Note> notes = new ArrayList<>();
     private LocalDateTime publicationDate;
 
-    public Edition(Editor editor, Category category) {
+    public Edition(String title, Editor editor, Category category) {
+        if (title == null) {
+            throw new IllegalArgumentException("title should not be null");
+        }
+
         if (editor == null) {
             throw new IllegalArgumentException("editor should not be null");
         }
@@ -30,6 +35,7 @@ public class Edition {
         }
 
         this.id = UUID.randomUUID();
+        this.title = title;
         this.editor = editor;
         this.category = category;
         this.status = Status.DRAFT;
@@ -37,6 +43,10 @@ public class Edition {
 
     public UUID getId() {
         return id;
+    }
+
+    public String getTitle() {
+        return title;
     }
 
     public Editor getEditor() {
@@ -73,6 +83,7 @@ public class Edition {
             throw new IllegalArgumentException("Note is alread assigned to this edition");
         }
 
+        note.updateEdition(this);
         this.notes.add(note);
     }
 
@@ -81,6 +92,7 @@ public class Edition {
             throw new IllegalArgumentException("Note is not assigned to this edition");
         }
 
+        note.updateEdition(null);
         this.notes.remove(note);
     }
 
@@ -107,5 +119,20 @@ public class Edition {
 
     public boolean isPublished() {
         return this.status == Status.PUBLISHED;
+    }
+
+    public void updateTitle(String title) {
+        if (isPublished()) {
+            throw new IllegalStateException("Cannot update an edition that is already published");
+        }
+
+        this.title = title;
+    }
+
+    public void changeCategory(Category category) {
+        if (isPublished()) {
+            throw new IllegalStateException("Cannot update an edition that is already published");
+        }
+        this.category = category;
     }
 }

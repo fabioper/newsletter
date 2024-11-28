@@ -5,7 +5,7 @@ import java.util.Arrays;
 public record ReadingTime(int minutes) {
     private static final float WORDS_PER_MINUTE = 200f;
 
-    public static ReadingTime calculate(String content) {
+    public static ReadingTime from(String content) {
         var words = Arrays.stream(content.split(" ")).toList();
         var totalMinutes = Math.ceil(words.size() / ReadingTime.WORDS_PER_MINUTE);
 

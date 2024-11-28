@@ -3,8 +3,7 @@ package com.github.fabioper.newsletter.domain;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When assigning note to edition")
 public class WhenAssigningNoteToEditionTests {
@@ -12,7 +11,7 @@ public class WhenAssigningNoteToEditionTests {
     @DisplayName("should assign note to edition if edition is in draft")
     void shouldAssignNoteIfEditionIsDraft() {
         var editor = new Editor();
-        var edition = editor.createEdition(new Category("Category"));
+        var edition = editor.createEdition("Edition", new Category("Category"));
 
         var author = new Author();
         var editorial = new Editorial("Editorial");
@@ -22,28 +21,34 @@ public class WhenAssigningNoteToEditionTests {
 
         assertEquals(1, edition.getNotes().size());
         assertEquals(note, edition.getNotes().get(0));
+        assertEquals(edition, note.getEdition());
     }
 
     @Test
     @DisplayName("should throw exception if edition is published")
     void shouldThrowIfEditionIsPublished() {
         var editor = new Editor();
-        var edition = editor.createEdition(new Category("Category"));
-
-        edition.publish();
+        var edition = editor.createEdition("Edition", new Category("Category"));
 
         var author = new Author();
         var editorial = new Editorial("Editorial");
+
+        edition.assignNote(author.createNote("Title", "Content", editorial));
+        edition.assignNote(author.createNote("Title", "Content", editorial));
+
+        edition.publish();
+
         var note = author.createNote("Title", "Content", editorial);
 
         assertThrows(IllegalStateException.class, () -> edition.assignNote(note));
+        assertNull(note.getEdition());
     }
 
     @Test
     @DisplayName("should throw exception if note is already assigned to edition")
     void shouldThrowIfNoteIsAlreadyAssigned() {
         var editor = new Editor();
-        var edition = editor.createEdition(new Category("Category"));
+        var edition = editor.createEdition("Edition", new Category("Category"));
 
         var author = new Author();
         var editorial = new Editorial("Editorial");
@@ -51,5 +56,6 @@ public class WhenAssigningNoteToEditionTests {
         edition.assignNote(note);
 
         assertThrows(IllegalArgumentException.class, () -> edition.assignNote(note));
+        assertEquals(edition, note.getEdition());
     }
 }
