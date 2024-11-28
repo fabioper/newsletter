@@ -1,27 +1,32 @@
 package com.github.fabioper.newsletter.domain;
 
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-public class AssignNotesTests {
+@DisplayName("When assigning note to edition")
+public class WhenAssigningNoteToEditionTests {
     @Test
-    void editionShouldAssignNote() {
+    @DisplayName("should assign note to edition if edition is in draft")
+    void shouldAssignNoteIfEditionIsDraft() {
         var editor = new Editor();
         var edition = editor.createEdition(new Category("Category"));
 
         var author = new Author();
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", "Content", editorial);
+
         edition.assignNote(note);
 
-        assertEquals(1, edition.getNotes().size(), "Edition should contain 1 note");
-        assertEquals(note, edition.getNotes().get(0), "Edition should contain correct note");
+        assertEquals(1, edition.getNotes().size());
+        assertEquals(note, edition.getNotes().get(0));
     }
 
     @Test
-    void publishedEditionShouldNotAllowToAssignNotes() {
+    @DisplayName("should throw exception if edition is published")
+    void shouldThrowIfEditionIsPublished() {
         var editor = new Editor();
         var edition = editor.createEdition(new Category("Category"));
 
@@ -31,7 +36,6 @@ public class AssignNotesTests {
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", "Content", editorial);
 
-        assertThrows(IllegalStateException.class, () -> edition.assignNote(note),
-                     "Should not be able to assign note to an edition with status Published");
+        assertThrows(IllegalStateException.class, () -> edition.assignNote(note));
     }
 }
