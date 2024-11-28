@@ -16,6 +16,12 @@ public class WhenPublishingEditionTests {
         var editor = new Editor();
         var edition = editor.createEdition(new Category("Category"));
 
+        var author = new Author();
+        var editorial = new Editorial("Editorial");
+
+        edition.assignNote(author.createNote("Note 1", longContent, editorial));
+        edition.assignNote(author.createNote("Note 2", longContent, editorial));
+
         edition.publish();
 
         assertEquals(Status.PUBLISHED, edition.getStatus());
@@ -23,19 +29,17 @@ public class WhenPublishingEditionTests {
     }
 
     @Test
-    @DisplayName("should throw if edition is already published")
-    void shouldThrowIfEditionAlreadyPublished() {
+    @DisplayName("should not publish if edition was already published")
+    void shouldNotPublishIfEditionAlreadyPublished() {
         var editor = new Editor();
         var edition = editor.createEdition(new Category("Category"));
-
-        edition.publish();
 
         assertThrows(IllegalStateException.class, edition::publish);
     }
 
     @Test
-    @DisplayName("should throw exception if total reading time is greater than 8 minutes")
-    void shouldThrowIfTotalReadingTimeIsGreaterThan8Minutes() {
+    @DisplayName("should not publish if total reading time exceeds limit")
+    void shouldNotPublishIfTotalReadingTimeExceedsLimit() {
         var editor = new Editor();
         var edition = editor.createEdition(new Category("Category"));
 
@@ -50,5 +54,18 @@ public class WhenPublishingEditionTests {
         ));
 
         assertThrows(IllegalStateException.class, edition::publish);
+        assertEquals(Status.DRAFT, edition.getStatus());
+        assertNull(edition.getPublicationDate());
+    }
+
+    @Test
+    @DisplayName("should not publish if edition has no notes")
+    void shouldNotPublishIfEditionHasNoNotes() {
+        var editor = new Editor();
+        var edition = editor.createEdition(new Category("Category"));
+
+        assertThrows(IllegalStateException.class, edition::publish);
+        assertEquals(Status.DRAFT, edition.getStatus());
+        assertNull(edition.getPublicationDate());
     }
 }

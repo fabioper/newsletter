@@ -1,12 +1,17 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.specifications.ExceedsReadingTimeLimitSpecification;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.fabioper.newsletter.domain.specifications.ExceedsReadingTimeLimitSpecification.READING_TIME_LIMIT_IN_MINUTES;
+
 public class Edition {
-    public static final int MAX_TOTAL_READING_TIME_IN_MINUTES = 8;
+    public static final ExceedsReadingTimeLimitSpecification exceedsReadingTimeLimitSpec =
+        new ExceedsReadingTimeLimitSpecification();
 
     private final UUID id;
     private final Editor editor;
@@ -79,18 +84,20 @@ public class Edition {
         this.notes.remove(note);
     }
 
-    public boolean isPublished() {
-        return this.status == Status.PUBLISHED;
-    }
-
     public void publish() {
         if (isPublished()) {
             throw new IllegalStateException("Edition has already been published");
         }
 
-        if (totalReadingTimeExceedsLimit()) {
+        if (notes.isEmpty()) {
+            throw new IllegalStateException("Edition has no notes");
+        }
+
+        if (exceedsReadingTimeLimitSpec.isSatisfiedBy(this)) {
             throw new IllegalStateException(
-                "Total reading time exceeds limit of %d minutes".formatted(MAX_TOTAL_READING_TIME_IN_MINUTES)
+                "Total reading time exceeds limit of %d minutes".formatted(
+                    READING_TIME_LIMIT_IN_MINUTES
+                )
             );
         }
 
@@ -98,12 +105,7 @@ public class Edition {
         this.publicationDate = LocalDateTime.now();
     }
 
-    private boolean totalReadingTimeExceedsLimit() {
-        return getTotalReadingTime() > MAX_TOTAL_READING_TIME_IN_MINUTES;
+    public boolean isPublished() {
+        return this.status == Status.PUBLISHED;
     }
-
-    private int getTotalReadingTime() {
-        return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
-    }
-
 }
