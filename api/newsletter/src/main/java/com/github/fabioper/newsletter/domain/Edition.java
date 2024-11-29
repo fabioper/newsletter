@@ -1,17 +1,12 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.specifications.ExceedsReadingTimeLimitSpecification;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-import static com.github.fabioper.newsletter.domain.specifications.ExceedsReadingTimeLimitSpecification.READING_TIME_LIMIT_IN_MINUTES;
-
 public class Edition {
-    public static final ExceedsReadingTimeLimitSpecification exceedsReadingTimeLimitSpec =
-        new ExceedsReadingTimeLimitSpecification();
+    private static final int READING_TIME_LIMIT_IN_MINUTES = 8;
 
     private final UUID id;
     private String title;
@@ -105,7 +100,7 @@ public class Edition {
             throw new IllegalStateException("Edition has no notes");
         }
 
-        if (exceedsReadingTimeLimitSpec.isSatisfiedBy(this)) {
+        if (getTotalReadingTime() > READING_TIME_LIMIT_IN_MINUTES) {
             throw new IllegalStateException(
                 "Total reading time exceeds limit of %d minutes".formatted(
                     READING_TIME_LIMIT_IN_MINUTES
@@ -134,5 +129,9 @@ public class Edition {
             throw new IllegalStateException("Cannot update an edition that is already published");
         }
         this.category = category;
+    }
+
+    private int getTotalReadingTime() {
+        return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
     }
 }
