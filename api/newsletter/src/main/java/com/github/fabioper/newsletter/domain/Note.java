@@ -1,9 +1,15 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
+import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
+import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
+import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
+import com.github.fabioper.newsletter.shared.Entity;
+
 import java.util.UUID;
 
-public class Note {
-    private UUID id;
+public class Note extends Entity {
+    private final UUID id;
     private String title;
     private String content;
     private Author author;
@@ -35,6 +41,8 @@ public class Note {
         this.editorial = editorial;
         this.readingTime = ReadingTime.from(content);
         this.edition = edition;
+
+        raiseEvent(new NoteCreatedEvent(this.id));
     }
 
     public String getTitle() {
@@ -50,7 +58,11 @@ public class Note {
             throw new IllegalStateException("Cannot update note assigned to a published edition");
         }
 
+        var oldTitle = this.title;
+
         this.title = title;
+
+        raiseEvent(new NoteTitleUpdatedEvent(this.id, oldTitle, title));
     }
 
     public void updateContent(String content) {
@@ -58,8 +70,12 @@ public class Note {
             throw new IllegalStateException("Cannot update note assigned to a published edition");
         }
 
+        var oldContent = this.content;
+
         this.content = content;
         this.readingTime = ReadingTime.from(content);
+
+        raiseEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
     }
 
     public void changeEditorial(Editorial editorial) {
@@ -67,7 +83,10 @@ public class Note {
             throw new IllegalStateException("Cannot update note assigned to a published edition");
         }
 
+        var oldEditorial = this.editorial;
         this.editorial = editorial;
+
+        raiseEvent(new NoteEditorialUpdatedEvent(this.id, oldEditorial.getId(), editorial.getId()));
     }
 
     public String getContent() {

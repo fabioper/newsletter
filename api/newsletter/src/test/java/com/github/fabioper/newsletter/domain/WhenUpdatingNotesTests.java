@@ -1,10 +1,16 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
+import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
+import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.empty;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -32,6 +38,15 @@ public class WhenUpdatingNotesTests {
         assertEquals(longContent, note.getContent());
         assertEquals(newEditorial, note.getEditorial());
         assertEquals(ReadingTime.from(longContent), note.getReadingTime());
+
+        assertThat(
+            note.getDomainEvents(),
+            hasItems(
+                new NoteTitleUpdatedEvent(note.getId(), "Title", "New title"),
+                new NoteContentUpdatedEvent(note.getId(), shortContent, longContent),
+                new NoteEditorialUpdatedEvent(note.getId(), editorial.getId(), newEditorial.getId())
+            )
+        );
     }
 
     @Test
@@ -51,6 +66,15 @@ public class WhenUpdatingNotesTests {
         assertEquals(longContent, note.getContent());
         assertEquals(newEditorial, note.getEditorial());
         assertEquals(ReadingTime.from(longContent), note.getReadingTime());
+
+        assertThat(
+            note.getDomainEvents(),
+            hasItems(
+                new NoteTitleUpdatedEvent(note.getId(), "Title", "New title"),
+                new NoteContentUpdatedEvent(note.getId(), shortContent, longContent),
+                new NoteEditorialUpdatedEvent(note.getId(), editorial.getId(), newEditorial.getId())
+            )
+        );
     }
 
     @Test
@@ -67,6 +91,8 @@ public class WhenUpdatingNotesTests {
 
         edition.publish();
 
+        note.clearEvents();
+
         assertThrows(IllegalStateException.class, () -> note.updateTitle("New title"));
         assertThrows(IllegalStateException.class, () -> note.updateContent(longContent));
         assertThrows(IllegalStateException.class, () -> {
@@ -78,5 +104,7 @@ public class WhenUpdatingNotesTests {
         assertEquals(shortContent, note.getContent());
         assertEquals(editorial, note.getEditorial());
         assertEquals(ReadingTime.from(shortContent), note.getReadingTime());
+
+        assertThat(note.getDomainEvents(), empty());
     }
 }

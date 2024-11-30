@@ -1,8 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItem;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When creating notes")
@@ -20,6 +23,9 @@ class WhenCreatingNotesTests {
         assertEquals(author, note.getAuthor());
         assertEquals(editorial, note.getEditorial());
         assertNotNull(note.getReadingTime());
+
+        var noteCreatedEvent = new NoteCreatedEvent(note.getId());
+        assertThat(note.getDomainEvents(), hasItem(noteCreatedEvent));
     }
 
     @Test
