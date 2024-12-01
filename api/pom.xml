@@ -24,5 +24,6 @@
 
     <modules>
         <module>newsletter</module>
+        <module>shared</module>
     </modules>
 </project>

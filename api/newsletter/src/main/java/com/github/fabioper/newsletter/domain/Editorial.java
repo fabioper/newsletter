@@ -1,8 +1,10 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
+
 import java.util.UUID;
 
-public class Editorial {
+public class Editorial extends BaseEntity {
     private final UUID id;
     private String name;
 

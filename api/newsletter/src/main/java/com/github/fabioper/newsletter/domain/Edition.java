@@ -1,7 +1,7 @@
 package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.events.*;
-import com.github.fabioper.newsletter.shared.BaseEntity;
+import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

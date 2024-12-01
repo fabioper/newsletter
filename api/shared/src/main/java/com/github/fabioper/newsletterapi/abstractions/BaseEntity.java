@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.shared;
+package com.github.fabioper.newsletterapi.abstractions;
 
 import java.util.ArrayList;
 import java.util.Collections;

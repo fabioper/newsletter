@@ -4,7 +4,7 @@ import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
-import com.github.fabioper.newsletter.shared.BaseEntity;
+import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.UUID;
 
