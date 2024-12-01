@@ -1,8 +1,12 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.NoteAssignedToEditionEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When assigning note to edition")
@@ -22,6 +26,11 @@ public class WhenAssigningNoteToEditionTests {
         assertEquals(1, edition.getNotes().size());
         assertEquals(note, edition.getNotes().get(0));
         assertEquals(edition, note.getEdition());
+
+        assertThat(
+            edition.getDomainEvents(),
+            hasItems(new NoteAssignedToEditionEvent(note.getId(), edition.getId()))
+        );
     }
 
     @Test
@@ -42,6 +51,11 @@ public class WhenAssigningNoteToEditionTests {
 
         assertThrows(IllegalStateException.class, () -> edition.assignNote(note));
         assertNull(note.getEdition());
+
+        assertThat(
+            edition.getDomainEvents(),
+            not(hasItems(new NoteAssignedToEditionEvent(note.getId(), edition.getId())))
+        );
     }
 
     @Test
@@ -55,7 +69,14 @@ public class WhenAssigningNoteToEditionTests {
         var note = author.createNote("Title", "Content", editorial);
         edition.assignNote(note);
 
+        edition.clearEvents();
+
         assertThrows(IllegalArgumentException.class, () -> edition.assignNote(note));
         assertEquals(edition, note.getEdition());
+
+        assertThat(
+            edition.getDomainEvents(),
+            not(hasItems(new NoteAssignedToEditionEvent(note.getId(), edition.getId())))
+        );
     }
 }

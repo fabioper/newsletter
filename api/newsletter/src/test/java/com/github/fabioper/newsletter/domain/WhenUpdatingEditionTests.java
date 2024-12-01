@@ -1,8 +1,13 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.EditionCategoryUpdated;
+import com.github.fabioper.newsletter.domain.events.EditionTitleUpdated;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
+import static org.hamcrest.Matchers.not;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -12,7 +17,8 @@ public class WhenUpdatingEditionTests {
     @DisplayName("should update fields correctly")
     void shouldUpdateFieldsCorrectly() {
         var editor = new Editor();
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var category = new Category("Category");
+        var edition = editor.createEdition("Edition", category);
 
         edition.updateTitle("Edited title");
 
@@ -21,6 +27,10 @@ public class WhenUpdatingEditionTests {
 
         assertEquals("Edited title", edition.getTitle());
         assertEquals(otherCategory, edition.getCategory());
+        assertThat(edition.getDomainEvents(), hasItems(
+            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId(), category.getId(), otherCategory.getId())
+        ));
     }
 
     @Test
@@ -37,13 +47,19 @@ public class WhenUpdatingEditionTests {
 
         edition.publish();
 
+        var otherCategory = new Category("Other");
+
         assertThrows(IllegalStateException.class, () -> edition.updateTitle("Edited title"));
         assertThrows(IllegalStateException.class, () -> {
-            var otherCategory = new Category("Other");
             edition.changeCategory(otherCategory);
         });
 
         assertEquals("Edition", edition.getTitle());
         assertEquals(originalCategory, edition.getCategory());
+
+        assertThat(edition.getDomainEvents(), not(hasItems(
+            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId(), originalCategory.getId(), otherCategory.getId())
+        )));
     }
 }

@@ -4,14 +4,14 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-public abstract class Entity {
+public abstract class BaseEntity {
     private final List<DomainEvent> domainEvents = new ArrayList<>();
 
     public List<DomainEvent> getDomainEvents() {
         return Collections.unmodifiableList(domainEvents);
     }
 
-    protected void raiseEvent(DomainEvent domainEvent) {
+    protected void raiseDomainEvent(DomainEvent domainEvent) {
         domainEvents.add(domainEvent);
     }
 

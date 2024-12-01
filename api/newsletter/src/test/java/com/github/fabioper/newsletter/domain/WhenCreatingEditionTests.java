@@ -1,8 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.EditionCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When creating edition")
@@ -21,6 +24,10 @@ class WhenCreatingEditionTests {
         assertEquals(category, edition.getCategory());
         assertEquals(editor, edition.getEditor());
         assertNull(edition.getPublicationDate());
+
+        assertThat(edition.getDomainEvents(), hasItems(
+            new EditionCreatedEvent(edition.getId())
+        ));
     }
 
     @Test

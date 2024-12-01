@@ -1,11 +1,14 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.events.*;
+import com.github.fabioper.newsletter.shared.BaseEntity;
+
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
-public class Edition {
+public class Edition extends BaseEntity {
     private static final int READING_TIME_LIMIT_IN_MINUTES = 8;
 
     private final UUID id;
@@ -34,6 +37,8 @@ public class Edition {
         this.editor = editor;
         this.category = category;
         this.status = Status.DRAFT;
+
+        raiseDomainEvent(new EditionCreatedEvent(this.id));
     }
 
     public UUID getId() {
@@ -80,6 +85,8 @@ public class Edition {
 
         note.updateEdition(this);
         this.notes.add(note);
+
+        raiseDomainEvent(new NoteAssignedToEditionEvent(note.getId(), this.id));
     }
 
     public void unassignNote(Note note) {
@@ -110,6 +117,8 @@ public class Edition {
 
         this.status = Status.PUBLISHED;
         this.publicationDate = LocalDateTime.now();
+
+        raiseDomainEvent(new EditionPublishedEvent(this.id));
     }
 
     public boolean isPublished() {
@@ -121,14 +130,21 @@ public class Edition {
             throw new IllegalStateException("Cannot update an edition that is already published");
         }
 
+        var oldTitle = this.title;
         this.title = title;
+
+        raiseDomainEvent(new EditionTitleUpdated(this.id, oldTitle, this.title));
     }
 
     public void changeCategory(Category category) {
         if (isPublished()) {
             throw new IllegalStateException("Cannot update an edition that is already published");
         }
+
+        var oldCategory = this.category;
         this.category = category;
+
+        raiseDomainEvent(new EditionCategoryUpdated(this.id, oldCategory.getId(), this.category.getId()));
     }
 
     private int getTotalReadingTime() {

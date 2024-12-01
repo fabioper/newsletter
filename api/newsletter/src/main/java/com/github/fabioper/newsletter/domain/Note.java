@@ -4,11 +4,11 @@ import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
 import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
-import com.github.fabioper.newsletter.shared.Entity;
+import com.github.fabioper.newsletter.shared.BaseEntity;
 
 import java.util.UUID;
 
-public class Note extends Entity {
+public class Note extends BaseEntity {
     private final UUID id;
     private String title;
     private String content;
@@ -42,7 +42,7 @@ public class Note extends Entity {
         this.readingTime = ReadingTime.from(content);
         this.edition = edition;
 
-        raiseEvent(new NoteCreatedEvent(this.id));
+        raiseDomainEvent(new NoteCreatedEvent(this.id));
     }
 
     public String getTitle() {
@@ -62,7 +62,7 @@ public class Note extends Entity {
 
         this.title = title;
 
-        raiseEvent(new NoteTitleUpdatedEvent(this.id, oldTitle, title));
+        raiseDomainEvent(new NoteTitleUpdatedEvent(this.id, oldTitle, title));
     }
 
     public void updateContent(String content) {
@@ -75,7 +75,7 @@ public class Note extends Entity {
         this.content = content;
         this.readingTime = ReadingTime.from(content);
 
-        raiseEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
+        raiseDomainEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
     }
 
     public void changeEditorial(Editorial editorial) {
@@ -86,7 +86,7 @@ public class Note extends Entity {
         var oldEditorial = this.editorial;
         this.editorial = editorial;
 
-        raiseEvent(new NoteEditorialUpdatedEvent(this.id, oldEditorial.getId(), editorial.getId()));
+        raiseDomainEvent(new NoteEditorialUpdatedEvent(this.id, oldEditorial.getId(), editorial.getId()));
     }
 
     public String getContent() {
