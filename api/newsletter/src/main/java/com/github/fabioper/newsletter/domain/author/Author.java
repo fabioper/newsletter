@@ -1,5 +1,7 @@
-package com.github.fabioper.newsletter.domain;
+package com.github.fabioper.newsletter.domain.author;
 
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.UUID;

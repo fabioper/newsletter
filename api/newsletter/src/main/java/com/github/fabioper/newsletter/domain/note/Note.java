@@ -1,9 +1,12 @@
-package com.github.fabioper.newsletter.domain;
+package com.github.fabioper.newsletter.domain.note;
 
-import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
-import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
-import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
-import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
+import com.github.fabioper.newsletter.domain.author.Author;
+import com.github.fabioper.newsletter.domain.edition.Edition;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.events.NoteContentUpdatedEvent;
+import com.github.fabioper.newsletter.domain.note.events.NoteCreatedEvent;
+import com.github.fabioper.newsletter.domain.note.events.NoteEditorialUpdatedEvent;
+import com.github.fabioper.newsletter.domain.note.events.NoteTitleUpdatedEvent;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.UUID;

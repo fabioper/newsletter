@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.domain;
+package com.github.fabioper.newsletter.domain.editorial;
 
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 

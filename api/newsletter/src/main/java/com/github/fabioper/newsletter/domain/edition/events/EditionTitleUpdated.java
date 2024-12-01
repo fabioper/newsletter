@@ -1,12 +1,12 @@
-package com.github.fabioper.newsletter.domain.events;
+package com.github.fabioper.newsletter.domain.edition.events;
 
 import com.github.fabioper.newsletterapi.abstractions.DomainEvent;
 
 import java.util.UUID;
 
-public record EditionCategoryUpdated(
+public record EditionTitleUpdated(
     UUID editionId,
-    UUID oldCategoryId,
-    UUID newCategoryId
+    String oldTitle,
+    String newTitle
 ) implements DomainEvent {
 }

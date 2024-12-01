@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.domain;
+package com.github.fabioper.newsletter.domain.note;
 
 import java.util.Arrays;
 

@@ -1,6 +1,8 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.events.NoteCreatedEvent;
+import com.github.fabioper.newsletter.domain.author.Author;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.events.NoteCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

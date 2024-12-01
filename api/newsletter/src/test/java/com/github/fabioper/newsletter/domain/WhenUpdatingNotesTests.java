@@ -1,8 +1,13 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.events.NoteContentUpdatedEvent;
-import com.github.fabioper.newsletter.domain.events.NoteEditorialUpdatedEvent;
-import com.github.fabioper.newsletter.domain.events.NoteTitleUpdatedEvent;
+import com.github.fabioper.newsletter.domain.author.Author;
+import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.editor.Editor;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.ReadingTime;
+import com.github.fabioper.newsletter.domain.note.events.NoteContentUpdatedEvent;
+import com.github.fabioper.newsletter.domain.note.events.NoteEditorialUpdatedEvent;
+import com.github.fabioper.newsletter.domain.note.events.NoteTitleUpdatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

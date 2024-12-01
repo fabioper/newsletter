@@ -1,6 +1,9 @@
-package com.github.fabioper.newsletter.domain;
+package com.github.fabioper.newsletter.domain.edition;
 
-import com.github.fabioper.newsletter.domain.events.*;
+import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.edition.events.*;
+import com.github.fabioper.newsletter.domain.editor.Editor;
+import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;

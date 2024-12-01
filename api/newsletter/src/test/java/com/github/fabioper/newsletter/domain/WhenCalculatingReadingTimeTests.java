@@ -1,5 +1,6 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.note.ReadingTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

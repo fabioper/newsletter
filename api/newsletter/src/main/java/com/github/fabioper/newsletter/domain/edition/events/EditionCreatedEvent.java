@@ -1,10 +1,10 @@
-package com.github.fabioper.newsletter.domain.events;
+package com.github.fabioper.newsletter.domain.edition.events;
 
 import com.github.fabioper.newsletterapi.abstractions.DomainEvent;
 
 import java.util.UUID;
 
-public record NoteCreatedEvent(
-    UUID noteId
+public record EditionCreatedEvent(
+    UUID editionId
 ) implements DomainEvent {
 }
