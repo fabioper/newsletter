@@ -6,4 +6,8 @@ import org.springframework.stereotype.Service;
 @Service
 public class NotesService {
     private final NotesRepository notesRepository;
+
+    public NotesService(NotesRepository notesRepository) {
+        this.notesRepository = notesRepository;
+    }
 }
