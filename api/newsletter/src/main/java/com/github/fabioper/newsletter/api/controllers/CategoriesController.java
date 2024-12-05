@@ -1,6 +1,7 @@
 package com.github.fabioper.newsletter.api.controllers;
 
 import com.github.fabioper.newsletter.application.services.CategoriesService;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -11,5 +12,10 @@ public class CategoriesController {
 
     public CategoriesController(CategoriesService categoriesService) {
         this.categoriesService = categoriesService;
+    }
+
+    @GetMapping
+    public String hello() {
+        return "Hello";
     }
 }
