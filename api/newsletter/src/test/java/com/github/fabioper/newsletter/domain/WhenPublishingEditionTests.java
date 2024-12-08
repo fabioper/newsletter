@@ -10,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -22,10 +23,10 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should update status and publication date")
     void shouldUpdateStatusAndPublicationDate() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
         edition.assignNote(author.createNote("Note 1", longContent, editorial));
@@ -44,7 +45,7 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if edition was already published")
     void shouldNotPublishIfEditionAlreadyPublished() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::publish);
@@ -56,10 +57,10 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if total reading time exceeds limit")
     void shouldNotPublishIfTotalReadingTimeExceedsLimit() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
         edition.updateNotes(List.of(
@@ -80,7 +81,7 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if edition has no notes")
     void shouldNotPublishIfEditionHasNoNotes() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::publish);

@@ -11,6 +11,8 @@ import com.github.fabioper.newsletter.domain.note.events.NoteTitleUpdatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -24,10 +26,10 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should update fields correctly if edition is in draft state")
     void shouldUpdateFieldsCorrectlyIfEditionIsDraft() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Title", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", shortContent, editorial);
 
@@ -57,7 +59,7 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should update fields correctly if note is not assigned to edition")
     void shouldUpdateCorrectlyIfNoteIsNotssignedToEdition() {
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", shortContent, editorial);
 
@@ -85,10 +87,10 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should not update fields if edition is in published state")
     void shouldNotUpdateIfEditionIsPublished() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Title", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", shortContent, editorial);
 

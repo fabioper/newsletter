@@ -18,8 +18,10 @@ public class KeycloakRoleConverter implements Converter<Jwt, Collection<GrantedA
             return List.of();
         }
 
-        return ((List<String>) realmAccess.get("roles"))
-            .stream()
+        //noinspection unchecked
+        var roles = (List<String>) realmAccess.get("roles");
+
+        return roles.stream()
             .map(role -> "ROLE_" + role)
             .map(SimpleGrantedAuthority::new)
             .collect(Collectors.toUnmodifiableSet());

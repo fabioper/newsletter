@@ -8,6 +8,8 @@ import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
@@ -18,10 +20,10 @@ public class WhenAssigningNoteToEditionTests {
     @Test
     @DisplayName("should assign note to edition if edition is in draft")
     void shouldAssignNoteIfEditionIsDraft() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", "Content", editorial);
 
@@ -40,10 +42,10 @@ public class WhenAssigningNoteToEditionTests {
     @Test
     @DisplayName("should throw exception if edition is published")
     void shouldThrowIfEditionIsPublished() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
         edition.assignNote(author.createNote("Title", "Content", editorial));
@@ -65,10 +67,10 @@ public class WhenAssigningNoteToEditionTests {
     @Test
     @DisplayName("should throw exception if note is already assigned to edition")
     void shouldThrowIfNoteIsAlreadyAssigned() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", "Content", editorial);
         edition.assignNote(note);
