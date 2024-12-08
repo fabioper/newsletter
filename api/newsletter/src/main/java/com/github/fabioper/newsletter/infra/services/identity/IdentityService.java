@@ -1,6 +1,5 @@
-package com.github.fabioper.newsletter.infra.service;
+package com.github.fabioper.newsletter.infra.services.identity;
 
-import com.github.fabioper.newsletter.application.dto.user.ApplicationUser;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.oauth2.jwt.Jwt;
@@ -9,8 +8,8 @@ import org.springframework.stereotype.Service;
 import java.util.UUID;
 
 @Service
-public class AuthService {
-    public ApplicationUser currentUser() {
+public class IdentityService {
+    public User getActiveUser() {
         var auth = SecurityContextHolder.getContext().getAuthentication();
         var jwt = (Jwt) auth.getPrincipal();
 
@@ -25,6 +24,6 @@ public class AuthService {
             .map(aut -> aut.replace("ROLE_", ""))
             .toList();
 
-        return new ApplicationUser(userId, roles);
+        return new User(userId, roles);
     }
 }

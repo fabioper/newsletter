@@ -1,20 +1,14 @@
 package com.github.fabioper.newsletter.domain.editor;
 
 import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.collaborator.Collaborator;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.UUID;
 
-public class Editor extends BaseEntity {
-    private final UUID id;
-
+public class Editor extends Collaborator {
     public Editor(UUID id) {
-        this.id = id;
-    }
-
-    public UUID getId() {
-        return id;
+        super(id);
     }
 
     public Edition createEdition(String title, Category category) {
