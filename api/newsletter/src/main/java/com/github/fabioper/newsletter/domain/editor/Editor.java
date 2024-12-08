@@ -9,8 +9,8 @@ import java.util.UUID;
 public class Editor extends BaseEntity {
     private final UUID id;
 
-    public Editor() {
-        this.id = UUID.randomUUID();
+    public Editor(UUID id) {
+        this.id = id;
     }
 
     public UUID getId() {
