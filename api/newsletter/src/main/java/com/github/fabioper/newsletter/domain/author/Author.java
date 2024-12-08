@@ -7,9 +7,17 @@ import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 import java.util.UUID;
 
 public class Author extends BaseEntity {
-    private UUID id;
+    private final UUID id;
+
+    public Author(UUID id) {
+        this.id = id;
+    }
 
     public Note createNote(String title, String content, Editorial editorial) {
         return new Note(title, content, this, editorial, null);
+    }
+
+    public UUID getId() {
+        return id;
     }
 }
