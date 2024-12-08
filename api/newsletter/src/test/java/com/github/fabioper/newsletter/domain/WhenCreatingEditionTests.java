@@ -7,6 +7,8 @@ import com.github.fabioper.newsletter.domain.editor.Editor;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
@@ -17,7 +19,7 @@ class WhenCreatingEditionTests {
     @Test
     @DisplayName("should create as a draft")
     void shouldCreateEditionAsADraft() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var category = new Category("Test");
         var edition = editor.createEdition("Edition", category);
 
@@ -36,7 +38,7 @@ class WhenCreatingEditionTests {
     @Test
     @DisplayName("should throw exception if provided data is invalid")
     void shouldThrowIfInvalidDataIsProvided() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         assertThrows(IllegalArgumentException.class, () -> editor.createEdition("Edition", null));
         assertThrows(IllegalArgumentException.class, () -> editor.createEdition(null, new Category("Category")));
     }

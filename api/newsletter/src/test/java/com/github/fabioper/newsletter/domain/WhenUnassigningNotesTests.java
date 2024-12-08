@@ -8,6 +8,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -16,10 +17,10 @@ public class WhenUnassigningNotesTests {
     @Test
     @DisplayName("should remove it if note is assigned to edition")
     void shouldRemoveNoteIfPresent() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
         var note2 = author.createNote("Title 2", "Content", new Editorial("Editorial"));
 
@@ -36,10 +37,10 @@ public class WhenUnassigningNotesTests {
     @Test
     @DisplayName("should throw exception if note is not assigned to edition")
     void shouldThrowIfNotPresent() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var edition = editor.createEdition("Edition", new Category("Category"));
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
         var note2 = author.createNote("Title 2", "Content", new Editorial("Editorial"));
 

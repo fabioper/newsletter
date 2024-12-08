@@ -9,6 +9,8 @@ import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.UUID;
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
@@ -20,7 +22,7 @@ public class WhenUpdatingEditionTests {
     @Test
     @DisplayName("should update fields correctly")
     void shouldUpdateFieldsCorrectly() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var category = new Category("Category");
         var edition = editor.createEdition("Edition", category);
 
@@ -40,11 +42,11 @@ public class WhenUpdatingEditionTests {
     @Test
     @DisplayName("should not update if edition is published")
     void shouldNotUpdateIfEditionIsPublished() {
-        var editor = new Editor();
+        var editor = new Editor(UUID.randomUUID());
         var originalCategory = new Category("Category");
         var edition = editor.createEdition("Edition", originalCategory);
 
-        var author = new Author();
+        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
         edition.assignNote(author.createNote("Note", "Content", editorial));
