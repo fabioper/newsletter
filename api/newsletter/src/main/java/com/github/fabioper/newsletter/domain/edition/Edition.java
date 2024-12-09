@@ -139,7 +139,7 @@ public class Edition extends BaseEntity {
         raiseDomainEvent(new EditionTitleUpdated(this.id, oldTitle, this.title));
     }
 
-    public void changeCategory(Category category) {
+    public void updateCategory(Category category) {
         if (isPublished()) {
             throw new IllegalStateException("Cannot update an edition that is already published");
         }

@@ -29,7 +29,7 @@ public class WhenUpdatingEditionTests {
         edition.updateTitle("Edited title");
 
         var otherCategory = new Category("Other");
-        edition.changeCategory(otherCategory);
+        edition.updateCategory(otherCategory);
 
         assertEquals("Edited title", edition.getTitle());
         assertEquals(otherCategory, edition.getCategory());
@@ -57,7 +57,7 @@ public class WhenUpdatingEditionTests {
 
         assertThrows(IllegalStateException.class, () -> edition.updateTitle("Edited title"));
         assertThrows(IllegalStateException.class, () -> {
-            edition.changeCategory(otherCategory);
+            edition.updateCategory(otherCategory);
         });
 
         assertEquals("Edition", edition.getTitle());
