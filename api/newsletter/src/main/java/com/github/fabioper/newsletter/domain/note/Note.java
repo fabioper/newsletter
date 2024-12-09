@@ -81,7 +81,7 @@ public class Note extends BaseEntity {
         raiseDomainEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
     }
 
-    public void changeEditorial(Editorial editorial) {
+    public void updateEditorial(Editorial editorial) {
         if (edition != null && edition.isPublished()) {
             throw new IllegalStateException("Cannot update note assigned to a published edition");
         }

@@ -39,7 +39,7 @@ public class WhenUpdatingNotesTests {
         note.updateContent(longContent);
 
         var newEditorial = new Editorial("Other");
-        note.changeEditorial(newEditorial);
+        note.updateEditorial(newEditorial);
 
         assertEquals("New title", note.getTitle());
         assertEquals(longContent, note.getContent());
@@ -58,7 +58,7 @@ public class WhenUpdatingNotesTests {
 
     @Test
     @DisplayName("should update fields correctly if note is not assigned to edition")
-    void shouldUpdateCorrectlyIfNoteIsNotssignedToEdition() {
+    void shouldUpdateCorrectlyIfNoteIsNotAssignedToEdition() {
         var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
         var note = author.createNote("Title", shortContent, editorial);
@@ -67,7 +67,7 @@ public class WhenUpdatingNotesTests {
         note.updateContent(longContent);
 
         var newEditorial = new Editorial("Other");
-        note.changeEditorial(newEditorial);
+        note.updateEditorial(newEditorial);
 
         assertEquals("New title", note.getTitle());
         assertEquals(longContent, note.getContent());
@@ -104,7 +104,7 @@ public class WhenUpdatingNotesTests {
         assertThrows(IllegalStateException.class, () -> note.updateContent(longContent));
         assertThrows(IllegalStateException.class, () -> {
             var newEditorial = new Editorial("Other");
-            note.changeEditorial(newEditorial);
+            note.updateEditorial(newEditorial);
         });
 
         assertEquals("Title", note.getTitle());
