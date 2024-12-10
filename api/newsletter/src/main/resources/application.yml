@@ -1,4 +1,11 @@
-spring.application.name=newsletter
-server.port=8081
+spring:
+  application:
+    name: newsletter
+  security:
+    oauth2:
+      resourceserver:
+        jwt:
+          issuer-uri: http://localhost:8080/realms/newsletterapi
+server:
+  port: 8081
 
-spring.security.oauth2.resourceserver.jwt.issuer-uri=http://localhost:8080/realms/newsletterapi
