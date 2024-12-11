@@ -1,9 +1,9 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.category.Category;
-import com.github.fabioper.newsletter.domain.editor.Editor;
+import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,12 +17,10 @@ public class WhenUnassigningNotesTests {
     @Test
     @DisplayName("should remove it if note is assigned to edition")
     void shouldRemoveNoteIfPresent() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
-        var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
-        var note2 = author.createNote("Title 2", "Content", new Editorial("Editorial"));
+        var note1 = new Note("Title", "Content", UUID.randomUUID(), new Editorial("Editorial"));
+        var note2 = new Note("Title 2", "Content", UUID.randomUUID(), new Editorial("Editorial"));
 
         edition.updateNotes(List.of(note1, note2));
 
@@ -37,12 +35,10 @@ public class WhenUnassigningNotesTests {
     @Test
     @DisplayName("should throw exception if note is not assigned to edition")
     void shouldThrowIfNotPresent() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
-        var note1 = author.createNote("Title", "Content", new Editorial("Editorial"));
-        var note2 = author.createNote("Title 2", "Content", new Editorial("Editorial"));
+        var note1 = new Note("Title", "Content", UUID.randomUUID(), new Editorial("Editorial"));
+        var note2 = new Note("Title 2", "Content", UUID.randomUUID(), new Editorial("Editorial"));
 
         edition.assignNote(note1);
 

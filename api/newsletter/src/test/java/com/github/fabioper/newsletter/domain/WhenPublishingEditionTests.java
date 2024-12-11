@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionPublishedEvent;
-import com.github.fabioper.newsletter.domain.editor.Editor;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -23,14 +23,12 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should update status and publication date")
     void shouldUpdateStatusAndPublicationDate() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
-        edition.assignNote(author.createNote("Note 1", longContent, editorial));
-        edition.assignNote(author.createNote("Note 2", longContent, editorial));
+        edition.assignNote(new Note("Note 1", longContent, UUID.randomUUID(), editorial));
+        edition.assignNote(new Note("Note 2", longContent, UUID.randomUUID(), editorial));
 
         edition.publish();
 
@@ -45,8 +43,7 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if edition was already published")
     void shouldNotPublishIfEditionAlreadyPublished() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::publish);
         assertThat(edition.getDomainEvents(), not(hasItems(
@@ -57,17 +54,15 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if total reading time exceeds limit")
     void shouldNotPublishIfTotalReadingTimeExceedsLimit() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
         edition.updateNotes(List.of(
-            author.createNote("Note 1", longContent, editorial),
-            author.createNote("Note 2", longContent, editorial),
-            author.createNote("Note 3", longContent, editorial),
-            author.createNote("Note 4", longContent, editorial)
+            new Note("Note 1", longContent, UUID.randomUUID(), editorial),
+            new Note("Note 2", longContent, UUID.randomUUID(), editorial),
+            new Note("Note 3", longContent, UUID.randomUUID(), editorial),
+            new Note("Note 4", longContent, UUID.randomUUID(), editorial)
         ));
 
         assertThrows(IllegalStateException.class, edition::publish);
@@ -81,8 +76,7 @@ public class WhenPublishingEditionTests {
     @Test
     @DisplayName("should not publish if edition has no notes")
     void shouldNotPublishIfEditionHasNoNotes() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Edition", new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::publish);
         assertEquals(Status.DRAFT, edition.getStatus());

@@ -1,6 +1,5 @@
 package com.github.fabioper.newsletter.domain.note;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletter.domain.note.events.NoteContentUpdatedEvent;
@@ -15,12 +14,11 @@ public class Note extends BaseEntity {
     private final UUID id;
     private String title;
     private String content;
-    private Author author;
+    private final UUID authorId;
     private Editorial editorial;
-    private ReadingTime readingTime;
     private Edition edition;
 
-    public Note(String title, String content, Author author, Editorial editorial, Edition edition) {
+    public Note(String title, String content, UUID authorId, Editorial editorial) {
         if (title == null) {
             throw new IllegalArgumentException("title should not be null");
         }
@@ -33,17 +31,15 @@ public class Note extends BaseEntity {
             throw new IllegalArgumentException("editorial should not be null");
         }
 
-        if (author == null) {
+        if (authorId == null) {
             throw new IllegalArgumentException("author should not be null");
         }
 
         this.id = UUID.randomUUID();
         this.title = title;
         this.content = content;
-        this.author = author;
+        this.authorId = authorId;
         this.editorial = editorial;
-        this.readingTime = ReadingTime.from(content);
-        this.edition = edition;
 
         raiseDomainEvent(new NoteCreatedEvent(this.id));
     }
@@ -76,7 +72,6 @@ public class Note extends BaseEntity {
         var oldContent = this.content;
 
         this.content = content;
-        this.readingTime = ReadingTime.from(content);
 
         raiseDomainEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
     }
@@ -96,8 +91,8 @@ public class Note extends BaseEntity {
         return content;
     }
 
-    public Author getAuthor() {
-        return author;
+    public UUID getAuthorId() {
+        return authorId;
     }
 
     public Edition getEdition() {
@@ -109,7 +104,7 @@ public class Note extends BaseEntity {
     }
 
     public ReadingTime getReadingTime() {
-        return readingTime;
+        return ReadingTime.from(content);
     }
 
     public void updateEdition(Edition edition) {

@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCategoryUpdated;
 import com.github.fabioper.newsletter.domain.edition.events.EditionTitleUpdated;
-import com.github.fabioper.newsletter.domain.editor.Editor;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -22,9 +22,8 @@ public class WhenUpdatingEditionTests {
     @Test
     @DisplayName("should update fields correctly")
     void shouldUpdateFieldsCorrectly() {
-        var editor = new Editor(UUID.randomUUID());
         var category = new Category("Category");
-        var edition = editor.createEdition("Edition", category);
+        var edition = new Edition("Edition", UUID.randomUUID(), category);
 
         edition.updateTitle("Edited title");
 
@@ -42,14 +41,12 @@ public class WhenUpdatingEditionTests {
     @Test
     @DisplayName("should not update if edition is published")
     void shouldNotUpdateIfEditionIsPublished() {
-        var editor = new Editor(UUID.randomUUID());
         var originalCategory = new Category("Category");
-        var edition = editor.createEdition("Edition", originalCategory);
+        var edition = new Edition("Edition", UUID.randomUUID(), originalCategory);
 
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
 
-        edition.assignNote(author.createNote("Note", "Content", editorial));
+        edition.assignNote(new Note("Note", "Content", UUID.randomUUID(), editorial));
 
         edition.publish();
 

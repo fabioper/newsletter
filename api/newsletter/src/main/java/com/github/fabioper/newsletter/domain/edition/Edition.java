@@ -2,7 +2,6 @@ package com.github.fabioper.newsletter.domain.edition;
 
 import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.events.*;
-import com.github.fabioper.newsletter.domain.editor.Editor;
 import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
@@ -16,18 +15,18 @@ public class Edition extends BaseEntity {
 
     private final UUID id;
     private String title;
-    private final Editor editor;
+    private final UUID editorId;
     private Status status;
     private Category category;
     private final List<Note> notes = new ArrayList<>();
     private LocalDateTime publicationDate;
 
-    public Edition(String title, Editor editor, Category category) {
+    public Edition(String title, UUID editorId, Category category) {
         if (title == null) {
             throw new IllegalArgumentException("title should not be null");
         }
 
-        if (editor == null) {
+        if (editorId == null) {
             throw new IllegalArgumentException("editor should not be null");
         }
 
@@ -37,7 +36,7 @@ public class Edition extends BaseEntity {
 
         this.id = UUID.randomUUID();
         this.title = title;
-        this.editor = editor;
+        this.editorId = editorId;
         this.category = category;
         this.status = Status.DRAFT;
 
@@ -52,8 +51,8 @@ public class Edition extends BaseEntity {
         return title;
     }
 
-    public Editor getEditor() {
-        return editor;
+    public UUID getEditorId() {
+        return editorId;
     }
 
     public Status getStatus() {

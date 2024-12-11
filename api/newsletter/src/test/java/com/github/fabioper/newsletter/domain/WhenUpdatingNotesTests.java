@@ -1,9 +1,9 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.category.Category;
-import com.github.fabioper.newsletter.domain.editor.Editor;
+import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletter.domain.note.ReadingTime;
 import com.github.fabioper.newsletter.domain.note.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.note.events.NoteEditorialUpdatedEvent;
@@ -26,12 +26,10 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should update fields correctly if edition is in draft state")
     void shouldUpdateFieldsCorrectlyIfEditionIsDraft() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Title", new Category("Category"));
+        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
-        var note = author.createNote("Title", shortContent, editorial);
+        var note = new Note("Title", shortContent, UUID.randomUUID(), editorial);
 
         edition.assignNote(note);
 
@@ -59,9 +57,8 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should update fields correctly if note is not assigned to edition")
     void shouldUpdateCorrectlyIfNoteIsNotAssignedToEdition() {
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
-        var note = author.createNote("Title", shortContent, editorial);
+        var note = new Note("Title", shortContent, UUID.randomUUID(), editorial);
 
         note.updateTitle("New title");
         note.updateContent(longContent);
@@ -87,12 +84,10 @@ public class WhenUpdatingNotesTests {
     @Test
     @DisplayName("should not update fields if edition is in published state")
     void shouldNotUpdateIfEditionIsPublished() {
-        var editor = new Editor(UUID.randomUUID());
-        var edition = editor.createEdition("Title", new Category("Category"));
+        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
 
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Editorial");
-        var note = author.createNote("Title", shortContent, editorial);
+        var note = new Note("Title", shortContent, UUID.randomUUID(), editorial);
 
         edition.assignNote(note);
 

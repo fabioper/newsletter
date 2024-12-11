@@ -1,7 +1,7 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.Author;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletter.domain.note.events.NoteCreatedEvent;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -17,14 +17,14 @@ class WhenCreatingNotesTests {
     @Test
     @DisplayName("should create if data is valid")
     void shouldCreateNoteIfDataIsValid() {
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Test");
-        var note = author.createNote("Note title", "Note content", editorial);
+        var authorId = UUID.randomUUID();
+        var note = new Note("Note title", "Note content", authorId, editorial);
 
         assertNotNull(note.getId());
         assertEquals("Note title", note.getTitle());
         assertEquals("Note content", note.getContent());
-        assertEquals(author, note.getAuthor());
+        assertEquals(authorId, note.getAuthorId());
         assertEquals(editorial, note.getEditorial());
         assertNotNull(note.getReadingTime());
 
@@ -35,22 +35,21 @@ class WhenCreatingNotesTests {
     @Test
     @DisplayName("should throw exception if provided data is invalid")
     void shouldThrowIfDataIsInvalid() {
-        var author = new Author(UUID.randomUUID());
         var editorial = new Editorial("Test");
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> author.createNote("Title", "Content", null)
+            () -> new Note("Title", "Content", UUID.randomUUID(), null)
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> author.createNote(null, "Content", editorial)
+            () -> new Note(null, "Content", UUID.randomUUID(), editorial)
         );
 
         assertThrows(
             IllegalArgumentException.class,
-            () -> author.createNote("Title", null, editorial)
+            () -> new Note("Title", null, UUID.randomUUID(), editorial)
         );
     }
 }
