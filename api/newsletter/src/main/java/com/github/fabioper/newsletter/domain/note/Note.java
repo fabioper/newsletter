@@ -1,6 +1,5 @@
 package com.github.fabioper.newsletter.domain.note;
 
-import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletter.domain.note.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.note.events.NoteCreatedEvent;
@@ -16,7 +15,7 @@ public class Note extends BaseEntity {
     private String content;
     private final UUID authorId;
     private Editorial editorial;
-    private Edition edition;
+    private boolean isLockedForChanges;
 
     public Note(String title, String content, UUID authorId, Editorial editorial) {
         if (title == null) {
@@ -40,6 +39,7 @@ public class Note extends BaseEntity {
         this.content = content;
         this.authorId = authorId;
         this.editorial = editorial;
+        this.isLockedForChanges = false;
 
         raiseDomainEvent(new NoteCreatedEvent(this.id));
     }
@@ -53,8 +53,8 @@ public class Note extends BaseEntity {
     }
 
     public void updateTitle(String title) {
-        if (edition != null && edition.isPublished()) {
-            throw new IllegalStateException("Cannot update note assigned to a published edition");
+        if (isLockedForChanges) {
+            throw new IllegalStateException("Note is locked for changes");
         }
 
         var oldTitle = this.title;
@@ -65,8 +65,8 @@ public class Note extends BaseEntity {
     }
 
     public void updateContent(String content) {
-        if (edition != null && edition.isPublished()) {
-            throw new IllegalStateException("Cannot update note assigned to a published edition");
+        if (isLockedForChanges) {
+            throw new IllegalStateException("Note is locked for changes");
         }
 
         var oldContent = this.content;
@@ -77,8 +77,8 @@ public class Note extends BaseEntity {
     }
 
     public void updateEditorial(Editorial editorial) {
-        if (edition != null && edition.isPublished()) {
-            throw new IllegalStateException("Cannot update note assigned to a published edition");
+        if (isLockedForChanges) {
+            throw new IllegalStateException("Note is locked for changes");
         }
 
         var oldEditorial = this.editorial;
@@ -95,8 +95,8 @@ public class Note extends BaseEntity {
         return authorId;
     }
 
-    public Edition getEdition() {
-        return edition;
+    public boolean isLockedForChanges() {
+        return isLockedForChanges;
     }
 
     public Editorial getEditorial() {
@@ -107,7 +107,7 @@ public class Note extends BaseEntity {
         return ReadingTime.from(content);
     }
 
-    public void updateEdition(Edition edition) {
-        this.edition = edition;
+    public void lockForChanges() {
+        this.isLockedForChanges = true;
     }
 }

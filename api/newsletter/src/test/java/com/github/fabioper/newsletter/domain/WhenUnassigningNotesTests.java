@@ -10,6 +10,9 @@ import org.junit.jupiter.api.Test;
 import java.util.List;
 import java.util.UUID;
 
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.*;
 
 @DisplayName("When unassigning notes from edition")
@@ -29,7 +32,7 @@ public class WhenUnassigningNotesTests {
         assertEquals(1, edition.getNotes().size());
         assertEquals(note1, edition.getNotes().get(0));
         assertFalse(edition.getNotes().contains(note2));
-        assertNull(note2.getEdition());
+        assertFalse(note2.isLockedForChanges());
     }
 
     @Test
@@ -43,6 +46,23 @@ public class WhenUnassigningNotesTests {
         edition.assignNote(note1);
 
         assertThrows(IllegalArgumentException.class, () -> edition.unassignNote(note2));
-        assertNotEquals(edition, note2.getEdition());
+    }
+
+    @Test
+    @DisplayName("should not unassign if edition is published")
+    void shouldNotUnassignIfEditionIsPublished() {
+        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
+
+        var note1 = new Note("Title", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var note2 = new Note("Title 2", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+
+        edition.assignNote(note1);
+        edition.assignNote(note2);
+
+        edition.publish();
+
+        assertThrows(IllegalArgumentException.class, () -> edition.unassignNote(note1));
+        assertThrows(IllegalArgumentException.class, () -> edition.unassignNote(note2));
+        assertThat(edition.getNotes(), hasItems(note1, note2));
     }
 }

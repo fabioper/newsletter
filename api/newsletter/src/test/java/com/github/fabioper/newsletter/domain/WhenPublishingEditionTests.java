@@ -21,8 +21,8 @@ import static org.junit.jupiter.api.Assertions.*;
 @DisplayName("When publishing edition")
 public class WhenPublishingEditionTests {
     @Test
-    @DisplayName("should update status and publication date")
-    void shouldUpdateStatusAndPublicationDate() {
+    @DisplayName("should update status, publication date and lock notes for changes")
+    void shouldUpdateStatusAndPublicationDateAndLockNotes() {
         var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
 
         var editorial = new Editorial("Editorial");
@@ -34,6 +34,8 @@ public class WhenPublishingEditionTests {
 
         assertEquals(Status.PUBLISHED, edition.getStatus());
         assertNotNull(edition.getPublicationDate());
+
+        edition.getNotes().forEach(note -> assertTrue(note.isLockedForChanges()));
 
         assertThat(edition.getDomainEvents(), hasItems(
             new EditionPublishedEvent(edition.getId())
@@ -71,6 +73,8 @@ public class WhenPublishingEditionTests {
         assertThat(edition.getDomainEvents(), not(hasItems(
             new EditionPublishedEvent(edition.getId())
         )));
+
+        edition.getNotes().forEach(note -> assertFalse(note.isLockedForChanges()));
     }
 
     @Test
@@ -84,5 +88,7 @@ public class WhenPublishingEditionTests {
         assertThat(edition.getDomainEvents(), not(hasItems(
             new EditionPublishedEvent(edition.getId())
         )));
+
+        edition.getNotes().forEach(note -> assertFalse(note.isLockedForChanges()));
     }
 }

@@ -85,18 +85,20 @@ public class Edition extends BaseEntity {
             throw new IllegalArgumentException("Note is alread assigned to this edition");
         }
 
-        note.updateEdition(this);
         this.notes.add(note);
 
         raiseDomainEvent(new NoteAssignedToEditionEvent(note.getId(), this.id));
     }
 
     public void unassignNote(Note note) {
+        if (isPublished()) {
+            throw new IllegalArgumentException("Cannot unassign note from a published edition");
+        }
+
         if (!notes.contains(note)) {
             throw new IllegalArgumentException("Note is not assigned to this edition");
         }
 
-        note.updateEdition(null);
         this.notes.remove(note);
     }
 
@@ -119,6 +121,7 @@ public class Edition extends BaseEntity {
 
         this.status = Status.PUBLISHED;
         this.publicationDate = LocalDateTime.now();
+        this.notes.forEach(Note::lockForChanges);
 
         raiseDomainEvent(new EditionPublishedEvent(this.id));
     }
