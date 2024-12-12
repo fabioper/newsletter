@@ -7,6 +7,7 @@ import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
 
@@ -64,7 +65,7 @@ public class Edition extends BaseEntity {
     }
 
     public List<Note> getNotes() {
-        return notes;
+        return Collections.unmodifiableList(notes);
     }
 
     public LocalDateTime getPublicationDate() {
@@ -81,11 +82,11 @@ public class Edition extends BaseEntity {
             throw new IllegalStateException("Cannot add new notes to a published edition");
         }
 
-        if (this.notes.contains(note)) {
-            throw new IllegalArgumentException("Note is alread assigned to this edition");
+        if (notes.contains(note)) {
+            throw new IllegalArgumentException("Note is already assigned to this edition");
         }
 
-        this.notes.add(note);
+        notes.add(note);
 
         raiseDomainEvent(new NoteAssignedToEditionEvent(note.getId(), this.id));
     }
