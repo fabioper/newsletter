@@ -163,7 +163,22 @@ public class Edition extends BaseEntity {
         return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
     }
 
+    public void submitToReview() {
+        if (!isClosed()) {
+            throw new IllegalStateException("Edition is not closed");
+        }
+
+        var oldStatus = this.status;
+        this.status = Status.AVAILABLE_FOR_REVIEW;
+
+        raiseEvent(new EditionStatusChanges(this.id.value(), oldStatus, this.status));
+    }
+
     private boolean isDraft() {
         return this.status == Status.DRAFT;
+    }
+
+    private boolean isClosed() {
+        return this.status == Status.CLOSED;
     }
 }

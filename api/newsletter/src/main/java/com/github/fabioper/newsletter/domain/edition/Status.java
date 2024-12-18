@@ -3,6 +3,7 @@ package com.github.fabioper.newsletter.domain.edition;
 public enum Status {
     DRAFT,
     CLOSED,
+    AVAILABLE_FOR_REVIEW,
     UNDER_REVIEW,
     REJECTED,
     APPROVED,
