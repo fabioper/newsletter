@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.domain.common;
+package com.github.fabioper.newsletter.domain.common.exceptions;
 
 public class NoteNotFoundException extends IllegalArgumentException {
     public NoteNotFoundException() {
