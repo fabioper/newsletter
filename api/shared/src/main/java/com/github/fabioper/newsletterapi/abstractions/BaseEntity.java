@@ -11,7 +11,7 @@ public abstract class BaseEntity {
         return Collections.unmodifiableList(domainEvents);
     }
 
-    protected void raiseDomainEvent(DomainEvent domainEvent) {
+    protected void raiseEvent(DomainEvent domainEvent) {
         domainEvents.add(domainEvent);
     }
 

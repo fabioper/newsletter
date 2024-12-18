@@ -27,7 +27,7 @@ public class Note extends BaseEntity {
         this.authorId = authorId;
         this.editorialId = editorialId;
 
-        raiseDomainEvent(new NoteCreatedEvent(this.id.value()));
+        raiseEvent(new NoteCreatedEvent(this.id.value()));
     }
 
     public String getTitle() {
@@ -45,7 +45,7 @@ public class Note extends BaseEntity {
 
         this.title = title;
 
-        raiseDomainEvent(new NoteTitleUpdatedEvent(this.id.value(), oldTitle, title));
+        raiseEvent(new NoteTitleUpdatedEvent(this.id.value(), oldTitle, title));
     }
 
     public void updateContent(String content) {
@@ -54,7 +54,7 @@ public class Note extends BaseEntity {
 
         this.content = content;
 
-        raiseDomainEvent(new NoteContentUpdatedEvent(this.id.value(), oldContent, content));
+        raiseEvent(new NoteContentUpdatedEvent(this.id.value(), oldContent, content));
     }
 
     public void updateEditorialId(EditorialId editorialId) {
@@ -63,7 +63,7 @@ public class Note extends BaseEntity {
 
         this.editorialId = editorialId;
 
-        raiseDomainEvent(new NoteEditorialUpdatedEvent(this.id.value(), oldEditorialId.value(), editorialId.value()));
+        raiseEvent(new NoteEditorialUpdatedEvent(this.id.value(), oldEditorialId.value(), editorialId.value()));
     }
 
     public String getContent() {

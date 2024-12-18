@@ -37,7 +37,7 @@ public class Edition extends BaseEntity {
         this.status = Status.DRAFT;
         this.notes = new ArrayList<>();
 
-        raiseDomainEvent(new EditionCreatedEvent(this.id.value()));
+        raiseEvent(new EditionCreatedEvent(this.id.value()));
     }
 
     public EditionId getId() {
@@ -68,6 +68,36 @@ public class Edition extends BaseEntity {
         return publicationDate;
     }
 
+    public NoteId addNote(
+        String title,
+        String content,
+        AuthorId authorId,
+        EditorialId editorialId
+    ) {
+        if (!isDraft()) {
+            throw new IllegalStateException("Edition can only be updated if it is in draft state");
+        }
+
+        var note = new Note(title, content, authorId, editorialId);
+        notes.add(note);
+
+        raiseEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
+
+        return note.getId();
+    }
+
+    public void removeNote(NoteId noteId) {
+        if (!isDraft()) {
+            throw new IllegalStateException("Edition can only be updated if it is in draft state");
+        }
+
+        var note = notes.stream()
+            .filter(n -> n.getId().equals(noteId)).findFirst()
+            .orElseThrow(NoteNotFoundException::new);
+
+        this.notes.remove(note);
+    }
+
     public void updateNote(
         NoteId noteId,
         String title,
@@ -85,37 +115,7 @@ public class Edition extends BaseEntity {
         note.updateContent(content);
         note.updateEditorialId(editorialId);
 
-        raiseDomainEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
-    }
-
-    public NoteId addNote(
-        String title,
-        String content,
-        AuthorId authorId,
-        EditorialId editorialId
-    ) {
-        if (!isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
-        }
-
-        var note = new Note(title, content, authorId, editorialId);
-        notes.add(note);
-
-        raiseDomainEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
-
-        return note.getId();
-    }
-
-    public void removeNote(NoteId noteId) {
-        if (!isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
-        }
-
-        var note = notes.stream()
-            .filter(n -> n.getId().equals(noteId)).findFirst()
-            .orElseThrow(NoteNotFoundException::new);
-
-        this.notes.remove(note);
+        raiseEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
     }
 
     public void closeEdition() {
@@ -130,7 +130,7 @@ public class Edition extends BaseEntity {
         this.status = Status.CLOSED;
         this.publicationDate = LocalDateTime.now();
 
-        raiseDomainEvent(new EditionClosedEvent(this.id.value()));
+        raiseEvent(new EditionClosedEvent(this.id.value()));
     }
 
     public void updateTitle(String title) {
@@ -141,7 +141,7 @@ public class Edition extends BaseEntity {
         var oldTitle = this.title;
         this.title = title;
 
-        raiseDomainEvent(new EditionTitleUpdated(this.id.value(), oldTitle, this.title));
+        raiseEvent(new EditionTitleUpdated(this.id.value(), oldTitle, this.title));
     }
 
     public void updateCategory(CategoryId categoryId) {
@@ -152,7 +152,7 @@ public class Edition extends BaseEntity {
         var oldCategoryId = this.categoryId;
         this.categoryId = categoryId;
 
-        raiseDomainEvent(new EditionCategoryUpdated(
+        raiseEvent(new EditionCategoryUpdated(
             this.id.value(), oldCategoryId.value(), this.categoryId.value())
         );
     }
