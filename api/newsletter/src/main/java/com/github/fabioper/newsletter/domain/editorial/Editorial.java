@@ -2,18 +2,16 @@ package com.github.fabioper.newsletter.domain.editorial;
 
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
-import java.util.UUID;
-
 public class Editorial extends BaseEntity {
-    private final UUID id;
-    private String name;
+    private final EditorialId id;
+    private final String name;
 
     public Editorial(String name) {
-        this.id = UUID.randomUUID();
+        this.id = new EditorialId();
         this.name = name;
     }
 
-    public UUID getId() {
+    public EditorialId getId() {
         return id;
     }
 

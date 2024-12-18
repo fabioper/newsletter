@@ -4,8 +4,7 @@ import com.github.fabioper.newsletterapi.abstractions.DomainEvent;
 
 import java.util.UUID;
 
-public record NoteAssignedToEditionEvent(
-    UUID noteId,
-    UUID editionId
+public record NoteCreatedEvent(
+    UUID noteId
 ) implements DomainEvent {
 }

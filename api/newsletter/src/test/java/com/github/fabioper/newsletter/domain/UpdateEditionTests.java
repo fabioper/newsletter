@@ -1,15 +1,14 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
+import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.edition.AuthorId;
 import com.github.fabioper.newsletter.domain.edition.Edition;
+import com.github.fabioper.newsletter.domain.edition.EditorId;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCategoryUpdated;
 import com.github.fabioper.newsletter.domain.edition.events.EditionTitleUpdated;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
-import com.github.fabioper.newsletter.domain.note.Note;
+import com.github.fabioper.newsletter.domain.editorial.EditorialId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-
-import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -18,39 +17,37 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
 @DisplayName("When updating edition")
-public class WhenUpdatingEditionTests {
+public class UpdateEditionTests {
     @Test
     @DisplayName("should update fields correctly")
     void shouldUpdateFieldsCorrectly() {
-        var category = new Category("Category");
-        var edition = new Edition("Edition", UUID.randomUUID(), category);
+        var category = new CategoryId();
+        var edition = new Edition("Edition", new EditorId(), category);
 
         edition.updateTitle("Edited title");
 
-        var otherCategory = new Category("Other");
+        var otherCategory = new CategoryId();
         edition.updateCategory(otherCategory);
 
         assertEquals("Edited title", edition.getTitle());
-        assertEquals(otherCategory, edition.getCategory());
+        assertEquals(otherCategory, edition.getCategoryId());
         assertThat(edition.getDomainEvents(), hasItems(
-            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
-            new EditionCategoryUpdated(edition.getId(), category.getId(), otherCategory.getId())
+            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId().value(), category.value(), otherCategory.value())
         ));
     }
 
     @Test
     @DisplayName("should not update if edition is published")
     void shouldNotUpdateIfEditionIsPublished() {
-        var originalCategory = new Category("Category");
-        var edition = new Edition("Edition", UUID.randomUUID(), originalCategory);
+        var originalCategory = new CategoryId();
+        var edition = new Edition("Edition", new EditorId(), originalCategory);
 
-        var editorial = new Editorial("Editorial");
+        edition.addNote("Note", "Content", new AuthorId(), new EditorialId());
 
-        edition.assignNote(new Note("Note", "Content", UUID.randomUUID(), editorial));
+        edition.closeEdition();
 
-        edition.publish();
-
-        var otherCategory = new Category("Other");
+        var otherCategory = new CategoryId();
 
         assertThrows(IllegalStateException.class, () -> edition.updateTitle("Edited title"));
         assertThrows(IllegalStateException.class, () -> {
@@ -58,11 +55,11 @@ public class WhenUpdatingEditionTests {
         });
 
         assertEquals("Edition", edition.getTitle());
-        assertEquals(originalCategory, edition.getCategory());
+        assertEquals(originalCategory, edition.getCategoryId());
 
         assertThat(edition.getDomainEvents(), not(hasItems(
-            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
-            new EditionCategoryUpdated(edition.getId(), originalCategory.getId(), otherCategory.getId())
+            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId().value(), originalCategory.value(), otherCategory.value())
         )));
     }
 }

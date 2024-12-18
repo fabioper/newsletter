@@ -1,6 +1,6 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.note.ReadingTime;
+import com.github.fabioper.newsletter.domain.edition.ReadingTime;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -8,8 +8,7 @@ import static com.github.fabioper.newsletter.testdata.NoteContentTestData.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @DisplayName("When calculating reading time")
-class WhenCalculatingReadingTimeTests {
-
+class CalculateReadingTimeTests {
     @Test
     @DisplayName("should get the correct number of minutes based on content")
     void shouldGetCorrectNumberOfMinutesBasedOnContent() {
