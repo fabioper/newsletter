@@ -130,7 +130,7 @@ public class Edition extends BaseEntity {
         this.status = Status.CLOSED;
         this.publicationDate = LocalDateTime.now();
 
-        raiseDomainEvent(new EditionPublishedEvent(this.id.value()));
+        raiseDomainEvent(new EditionClosedEvent(this.id.value()));
     }
 
     public void updateTitle(String title) {

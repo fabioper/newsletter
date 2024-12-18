@@ -5,7 +5,7 @@ import com.github.fabioper.newsletter.domain.edition.AuthorId;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.EditorId;
 import com.github.fabioper.newsletter.domain.edition.Status;
-import com.github.fabioper.newsletter.domain.edition.events.EditionPublishedEvent;
+import com.github.fabioper.newsletter.domain.edition.events.EditionClosedEvent;
 import com.github.fabioper.newsletter.domain.editorial.EditorialId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -32,7 +32,7 @@ public class CloseEditionTests {
         assertNotNull(edition.getPublicationDate());
 
         assertThat(edition.getDomainEvents(), hasItems(
-            new EditionPublishedEvent(edition.getId().value())
+            new EditionClosedEvent(edition.getId().value())
         ));
     }
 
@@ -43,7 +43,7 @@ public class CloseEditionTests {
 
         assertThrows(IllegalStateException.class, edition::closeEdition);
         assertThat(edition.getDomainEvents(), not(hasItems(
-            new EditionPublishedEvent(edition.getId().value())
+            new EditionClosedEvent(edition.getId().value())
         )));
     }
 
@@ -63,7 +63,7 @@ public class CloseEditionTests {
 
         assertNull(edition.getPublicationDate());
         assertThat(edition.getDomainEvents(), not(hasItems(
-            new EditionPublishedEvent(edition.getId().value())
+            new EditionClosedEvent(edition.getId().value())
         )));
     }
 
@@ -76,7 +76,7 @@ public class CloseEditionTests {
         assertEquals(Status.DRAFT, edition.getStatus());
         assertNull(edition.getPublicationDate());
         assertThat(edition.getDomainEvents(), not(hasItems(
-            new EditionPublishedEvent(edition.getId().value())
+            new EditionClosedEvent(edition.getId().value())
         )));
     }
 }
