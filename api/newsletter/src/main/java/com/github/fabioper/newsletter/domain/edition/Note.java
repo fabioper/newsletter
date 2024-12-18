@@ -1,5 +1,6 @@
 package com.github.fabioper.newsletter.domain.edition;
 
+import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.edition.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteCreatedEvent;

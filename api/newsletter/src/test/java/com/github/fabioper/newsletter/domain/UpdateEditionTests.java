@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
+import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.category.CategoryId;
-import com.github.fabioper.newsletter.domain.edition.AuthorId;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletter.domain.edition.EditorId;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCategoryUpdated;
 import com.github.fabioper.newsletter.domain.edition.events.EditionTitleUpdated;
+import com.github.fabioper.newsletter.domain.editor.EditorId;
 import com.github.fabioper.newsletter.domain.editorial.EditorialId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;

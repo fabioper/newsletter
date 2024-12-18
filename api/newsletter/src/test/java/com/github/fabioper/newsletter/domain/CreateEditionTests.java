@@ -2,9 +2,9 @@ package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.category.CategoryId;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletter.domain.edition.EditorId;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCreatedEvent;
+import com.github.fabioper.newsletter.domain.editor.EditorId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 

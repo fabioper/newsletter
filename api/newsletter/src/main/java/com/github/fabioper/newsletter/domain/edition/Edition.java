@@ -1,10 +1,12 @@
 package com.github.fabioper.newsletter.domain.edition;
 
+import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.category.CategoryId;
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.common.exceptions.NoteNotFoundException;
 import com.github.fabioper.newsletter.domain.common.exceptions.TotalReadingTimeExceededException;
 import com.github.fabioper.newsletter.domain.edition.events.*;
+import com.github.fabioper.newsletter.domain.editor.EditorId;
 import com.github.fabioper.newsletter.domain.editorial.EditorialId;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 

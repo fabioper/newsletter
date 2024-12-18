@@ -3,8 +3,8 @@ package com.github.fabioper.newsletter.domain.editorial;
 import java.util.UUID;
 
 public record EditorialId(UUID value) {
-    public EditorialId(String value) {
-        this(UUID.fromString(value));
+    public static EditorialId from(String value) {
+        return new EditorialId(UUID.fromString(value));
     }
 
     public EditorialId() {
