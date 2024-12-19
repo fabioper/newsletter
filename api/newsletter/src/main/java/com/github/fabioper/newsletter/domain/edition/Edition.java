@@ -42,6 +42,7 @@ public class Edition extends BaseEntity {
         raiseEvent(new EditionCreatedEvent(this.id.value()));
     }
 
+    //region Getters
     public EditionId getId() {
         return id;
     }
@@ -69,6 +70,7 @@ public class Edition extends BaseEntity {
     public LocalDateTime getPublicationDate() {
         return publicationDate;
     }
+    //endregion
 
     public NoteId addNote(
         String title,

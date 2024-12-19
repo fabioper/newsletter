@@ -31,13 +31,31 @@ public class Note extends BaseEntity {
         raiseEvent(new NoteCreatedEvent(this.id.value()));
     }
 
+    //region Getters
+    public NoteId getId() {
+        return id;
+    }
+
     public String getTitle() {
         return title;
     }
 
-    public NoteId getId() {
-        return id;
+    public String getContent() {
+        return content;
     }
+
+    public AuthorId getAuthorId() {
+        return authorId;
+    }
+
+    public EditorialId getEditorialId() {
+        return editorialId;
+    }
+
+    public ReadingTime getReadingTime() {
+        return ReadingTime.from(content);
+    }
+    //endregion
 
     public void updateTitle(String title) {
         var oldTitle = this.title;
@@ -65,21 +83,5 @@ public class Note extends BaseEntity {
         this.editorialId = editorialId;
 
         raiseEvent(new NoteEditorialUpdatedEvent(this.id.value(), oldEditorialId.value(), editorialId.value()));
-    }
-
-    public String getContent() {
-        return content;
-    }
-
-    public AuthorId getAuthorId() {
-        return authorId;
-    }
-
-    public EditorialId getEditorialId() {
-        return editorialId;
-    }
-
-    public ReadingTime getReadingTime() {
-        return ReadingTime.from(content);
     }
 }

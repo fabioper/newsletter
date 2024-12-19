@@ -6,4 +6,10 @@ public class Guard {
             throw new IllegalArgumentException(message);
         }
     }
+
+    public static void againstNullOrEmpty(String value, String message) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException(message);
+        }
+    }
 }
