@@ -5,7 +5,7 @@ public enum Status {
     CLOSED,
     AVAILABLE_FOR_REVIEW,
     UNDER_REVIEW,
-    REJECTED,
+    PENDING_ADJUSTMENTS,
     APPROVED,
     PUBLISHED
 }

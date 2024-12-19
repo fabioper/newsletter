@@ -184,12 +184,12 @@ public class Edition extends BaseEntity {
         this.status = Status.APPROVED;
     }
 
-    public void reject() {
+    public void putAsPendingAdjustments() {
         if (!isUnderReview()) {
             throw new IllegalStateException("Edition must be under review to be rejected");
         }
 
-        this.status = Status.REJECTED;
+        this.status = Status.PENDING_ADJUSTMENTS;
     }
 
     public void putUnderReview() {

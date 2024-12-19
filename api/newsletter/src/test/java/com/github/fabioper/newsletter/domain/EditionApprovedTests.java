@@ -13,25 +13,25 @@ import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortC
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
-@DisplayName("When rejecting edition")
-public class RejectEditionTests {
+@DisplayName("When an edition review is approved")
+public class EditionApprovedTests {
     @Test
-    @DisplayName("should update status to REJECTED")
-    void shouldUpdateStatusToRejected() {
+    @DisplayName("should update status to approved")
+    void shouldUpdateStatusToApproved() {
         var edition = new Edition("Title", new EditorId(), new CategoryId());
         edition.addNote("Note1", shortContent, new AuthorId(), new EditorialId());
 
         edition.closeEdition();
         edition.submitToReview();
         edition.putUnderReview();
-        edition.reject();
+        edition.approve();
 
-        assertEquals(Status.REJECTED, edition.getStatus());
+        assertEquals(Status.APPROVED, edition.getStatus());
     }
 
     @Test
-    @DisplayName("should not reject edition if it is not under review")
-    void shouldNotRejectIfItIsNotUnderReview() {
+    @DisplayName("should update status if it was not previously under review")
+    void shouldNotApproveIfItIsNotUnderReview() {
         var edition = new Edition("Title", new EditorId(), new CategoryId());
         edition.addNote("Note1", shortContent, new AuthorId(), new EditorialId());
 
@@ -39,7 +39,7 @@ public class RejectEditionTests {
         edition.submitToReview();
 
         var originalStatus = edition.getStatus();
-        assertThrows(IllegalStateException.class, edition::reject);
+        assertThrows(IllegalStateException.class, edition::approve);
         assertEquals(originalStatus, edition.getStatus());
     }
 }
