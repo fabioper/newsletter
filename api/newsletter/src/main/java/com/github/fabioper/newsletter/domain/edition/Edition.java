@@ -108,8 +108,8 @@ public class Edition extends BaseEntity {
         String content,
         EditorialId editorialId
     ) {
-        if (!isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
+        if (!isDraft() && !isPendingAdjustments()) {
+            throw new IllegalStateException("Edition cannot be updated");
         }
 
         var note = notes.stream().filter(n -> n.getId().equals(noteId)).findFirst()
@@ -138,8 +138,8 @@ public class Edition extends BaseEntity {
     }
 
     public void updateTitle(String title) {
-        if (!isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
+        if (!isDraft() && !isPendingAdjustments()) {
+            throw new IllegalStateException("Edition cannot not be updated");
         }
 
         var oldTitle = this.title;
@@ -149,8 +149,8 @@ public class Edition extends BaseEntity {
     }
 
     public void updateCategory(CategoryId categoryId) {
-        if (!isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
+        if (!isDraft() && !isPendingAdjustments()) {
+            throw new IllegalStateException("Edition cannot be updated");
         }
 
         var oldCategoryId = this.categoryId;
@@ -202,6 +202,10 @@ public class Edition extends BaseEntity {
 
     private boolean isDraft() {
         return this.status == Status.DRAFT;
+    }
+
+    private boolean isPendingAdjustments() {
+        return this.status == Status.PENDING_ADJUSTMENTS;
     }
 
     private boolean isClosed() {

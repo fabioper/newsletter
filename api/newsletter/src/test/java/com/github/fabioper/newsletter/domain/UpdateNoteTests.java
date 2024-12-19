@@ -50,6 +50,39 @@ public class UpdateNoteTests {
     }
 
     @Test
+    @DisplayName("should update fields correctly if edition is pending adjustments")
+    void shouldUpdateFieldsCorrectlyIfEditionIsPendingAdjustments() {
+        var edition = new Edition("Title", new EditorId(), new CategoryId());
+
+        var editorialId = new EditorialId();
+        var noteId = edition.addNote("Title", shortContent, new AuthorId(), editorialId);
+
+        edition.closeEdition();
+        edition.submitToReview();
+        edition.putUnderReview();
+        edition.putAsPendingAdjustments();
+
+        var newEditorial = new EditorialId();
+        edition.updateNote(noteId, "New title", longContent, newEditorial);
+
+        var note = edition.getNotes().get(0);
+
+        assertEquals("New title", note.getTitle());
+        assertEquals(longContent, note.getContent());
+        assertEquals(newEditorial, note.getEditorialId());
+        assertEquals(ReadingTime.from(longContent), note.getReadingTime());
+
+        assertThat(
+            note.getDomainEvents(),
+            hasItems(
+                new NoteTitleUpdatedEvent(noteId.value(), "Title", "New title"),
+                new NoteContentUpdatedEvent(noteId.value(), shortContent, longContent),
+                new NoteEditorialUpdatedEvent(noteId.value(), editorialId.value(), newEditorial.value())
+            )
+        );
+    }
+
+    @Test
     @DisplayName("should not update fields if edition is in published state")
     void shouldNotUpdateIfEditionIsPublished() {
         var edition = new Edition("Title", new EditorId(), new CategoryId());

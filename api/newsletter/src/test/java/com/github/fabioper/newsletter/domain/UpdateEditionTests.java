@@ -10,6 +10,7 @@ import com.github.fabioper.newsletter.domain.editorial.EditorialId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
 import static org.hamcrest.Matchers.not;
@@ -23,6 +24,31 @@ public class UpdateEditionTests {
     void shouldUpdateFieldsCorrectly() {
         var category = new CategoryId();
         var edition = new Edition("Edition", new EditorId(), category);
+
+        edition.updateTitle("Edited title");
+
+        var otherCategory = new CategoryId();
+        edition.updateCategory(otherCategory);
+
+        assertEquals("Edited title", edition.getTitle());
+        assertEquals(otherCategory, edition.getCategoryId());
+        assertThat(edition.getDomainEvents(), hasItems(
+            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId().value(), category.value(), otherCategory.value())
+        ));
+    }
+
+    @Test
+    @DisplayName("should update fields correctly if edition is pending adjustments")
+    void shouldUpdateFieldsIfEditionIsPendingAdjustments() {
+        var category = new CategoryId();
+        var edition = new Edition("Edition", new EditorId(), category);
+        edition.addNote("Title", shortContent, new AuthorId(), new EditorialId());
+
+        edition.closeEdition();
+        edition.submitToReview();
+        edition.putUnderReview();
+        edition.putAsPendingAdjustments();
 
         edition.updateTitle("Edited title");
 
