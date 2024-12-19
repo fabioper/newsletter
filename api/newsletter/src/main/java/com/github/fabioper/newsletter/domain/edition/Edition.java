@@ -176,11 +176,43 @@ public class Edition extends BaseEntity {
         raiseEvent(new EditionStatusChanges(this.id.value(), oldStatus, this.status));
     }
 
+    public void approve() {
+        if (!isUnderReview()) {
+            throw new IllegalStateException("Edition must be under review to be approved");
+        }
+
+        this.status = Status.APPROVED;
+    }
+
+    public void reject() {
+        if (!isUnderReview()) {
+            throw new IllegalStateException("Edition must be under review to be rejected");
+        }
+
+        this.status = Status.REJECTED;
+    }
+
+    public void putUnderReview() {
+        if (!isAvailableForReview()) {
+            throw new IllegalStateException("Edition must be available for review in order to put it under review");
+        }
+
+        this.status = Status.UNDER_REVIEW;
+    }
+
     private boolean isDraft() {
         return this.status == Status.DRAFT;
     }
 
     private boolean isClosed() {
         return this.status == Status.CLOSED;
+    }
+
+    private boolean isUnderReview() {
+        return this.status == Status.UNDER_REVIEW;
+    }
+
+    private boolean isAvailableForReview() {
+        return this.status == Status.AVAILABLE_FOR_REVIEW;
     }
 }
