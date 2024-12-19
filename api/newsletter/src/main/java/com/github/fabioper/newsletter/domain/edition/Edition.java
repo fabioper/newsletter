@@ -78,7 +78,7 @@ public class Edition extends BaseEntity {
         AuthorId authorId,
         EditorialId editorialId
     ) {
-        if (!isDraft()) {
+        if (!this.status.isDraft()) {
             throw new IllegalStateException("Edition can only be updated if it is in draft state");
         }
 
@@ -91,7 +91,7 @@ public class Edition extends BaseEntity {
     }
 
     public void removeNote(NoteId noteId) {
-        if (!isDraft()) {
+        if (!this.status.isDraft()) {
             throw new IllegalStateException("Edition can only be updated if it is in draft state");
         }
 
@@ -108,7 +108,7 @@ public class Edition extends BaseEntity {
         String content,
         EditorialId editorialId
     ) {
-        if (!isDraft() && !isPendingAdjustments()) {
+        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
             throw new IllegalStateException("Edition cannot be updated");
         }
 
@@ -138,7 +138,7 @@ public class Edition extends BaseEntity {
     }
 
     public void updateTitle(String title) {
-        if (!isDraft() && !isPendingAdjustments()) {
+        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
             throw new IllegalStateException("Edition cannot not be updated");
         }
 
@@ -149,7 +149,7 @@ public class Edition extends BaseEntity {
     }
 
     public void updateCategory(CategoryId categoryId) {
-        if (!isDraft() && !isPendingAdjustments()) {
+        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
             throw new IllegalStateException("Edition cannot be updated");
         }
 
@@ -166,7 +166,7 @@ public class Edition extends BaseEntity {
     }
 
     public void submitToReview() {
-        if (!isClosed()) {
+        if (!this.status.isClosed()) {
             throw new IllegalStateException("Edition is not closed");
         }
 
@@ -177,7 +177,7 @@ public class Edition extends BaseEntity {
     }
 
     public void approve() {
-        if (!isUnderReview()) {
+        if (!this.status.isUnderReview()) {
             throw new IllegalStateException("Edition must be under review to be approved");
         }
 
@@ -185,7 +185,7 @@ public class Edition extends BaseEntity {
     }
 
     public void putAsPendingAdjustments() {
-        if (!isUnderReview()) {
+        if (!this.status.isUnderReview()) {
             throw new IllegalStateException("Edition must be under review to be rejected");
         }
 
@@ -193,30 +193,10 @@ public class Edition extends BaseEntity {
     }
 
     public void putUnderReview() {
-        if (!isAvailableForReview()) {
+        if (!this.status.isAvailableForReview()) {
             throw new IllegalStateException("Edition must be available for review in order to put it under review");
         }
 
         this.status = Status.UNDER_REVIEW;
-    }
-
-    private boolean isDraft() {
-        return this.status == Status.DRAFT;
-    }
-
-    private boolean isPendingAdjustments() {
-        return this.status == Status.PENDING_ADJUSTMENTS;
-    }
-
-    private boolean isClosed() {
-        return this.status == Status.CLOSED;
-    }
-
-    private boolean isUnderReview() {
-        return this.status == Status.UNDER_REVIEW;
-    }
-
-    private boolean isAvailableForReview() {
-        return this.status == Status.AVAILABLE_FOR_REVIEW;
     }
 }

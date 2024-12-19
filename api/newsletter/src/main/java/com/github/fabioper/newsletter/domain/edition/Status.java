@@ -7,5 +7,25 @@ public enum Status {
     UNDER_REVIEW,
     PENDING_ADJUSTMENTS,
     APPROVED,
-    PUBLISHED
+    PUBLISHED;
+
+    public boolean isUnderReview() {
+        return this == Status.UNDER_REVIEW;
+    }
+
+    public boolean isDraft() {
+        return this == Status.DRAFT;
+    }
+
+    public boolean isPendingAdjustments() {
+        return this == Status.PENDING_ADJUSTMENTS;
+    }
+
+    public boolean isAvailableForReview() {
+        return this == Status.AVAILABLE_FOR_REVIEW;
+    }
+
+    public boolean isClosed() {
+        return this == Status.CLOSED;
+    }
 }
