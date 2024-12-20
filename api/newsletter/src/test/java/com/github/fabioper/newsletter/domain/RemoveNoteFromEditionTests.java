@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.author.AuthorId;
-import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.NoteId;
 import com.github.fabioper.newsletter.domain.editor.EditorId;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -17,10 +17,10 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should remove it if note is assigned to edition")
     void shouldRemoveNoteIfPresent() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        var note1 = edition.addNote("Title", "Content", new AuthorId(), new EditorialId());
-        var note2 = edition.addNote("Title 2", "Content", new AuthorId(), new EditorialId());
+        var note1 = edition.addNote("Title", "Content", new AuthorId(), new Editorial("Editorial"));
+        var note2 = edition.addNote("Title 2", "Content", new AuthorId(), new Editorial("Editorial"));
 
         edition.removeNote(note2);
 
@@ -32,9 +32,9 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should throw exception if note is not assigned to edition")
     void shouldThrowIfNotPresent() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        edition.addNote("Title", "Content", new AuthorId(), new EditorialId());
+        edition.addNote("Title", "Content", new AuthorId(), new Editorial("Editorial"));
 
         var note2 = new NoteId();
 
@@ -44,10 +44,10 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should not remove if edition is published")
     void shouldNotRemoveIfEditionIsPublished() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        var note1 = edition.addNote("Title", longContent, new AuthorId(), new EditorialId());
-        var note2 = edition.addNote("Title 2", longContent, new AuthorId(), new EditorialId());
+        var note1 = edition.addNote("Title", longContent, new AuthorId(), new Editorial("Editorial"));
+        var note2 = edition.addNote("Title 2", longContent, new AuthorId(), new Editorial("Editorial"));
 
         edition.closeEdition();
 

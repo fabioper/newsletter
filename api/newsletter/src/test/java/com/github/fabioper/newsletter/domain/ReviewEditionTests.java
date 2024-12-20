@@ -1,10 +1,10 @@
 package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.author.AuthorId;
-import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.editor.EditorId;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletter.domain.review.Review;
 import com.github.fabioper.newsletter.domain.review.ReviewStatus;
 import com.github.fabioper.newsletter.domain.review.events.ReviewApprovedEvent;
@@ -28,15 +28,15 @@ public class ReviewEditionTests {
     @DisplayName("should start review with in progress status")
     void shouldStartWithInProgressStatus() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
         var review = Review.startReviewOf(edition, reviewerId);
 
         assertEquals(ReviewStatus.IN_PROGRESS, review.getStatus());
-        assertEquals(edition.getId(), review.getEditionId());
+        assertEquals(edition, review.getEdition());
         assertEquals(reviewerId, review.getReviewerId());
     }
 
@@ -44,8 +44,8 @@ public class ReviewEditionTests {
     @DisplayName("should raise event when starting review")
     void shouldRaiseEventWhenStartingReview() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
@@ -60,9 +60,9 @@ public class ReviewEditionTests {
     @DisplayName("should not start review if edition is not closed")
     void shouldNotStartIfEditionIsNotClosed() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Test", new EditorId(), new CategoryId());
+        var edition = new Edition("Test", new EditorId(), new Category("Category"));
 
-        edition.addNote("Note", shortContent, new AuthorId(), new EditorialId());
+        edition.addNote("Note", shortContent, new AuthorId(), new Editorial("Editorial"));
 
         assertThrows(IllegalStateException.class, () -> Review.startReviewOf(edition, reviewerId));
     }
@@ -71,8 +71,8 @@ public class ReviewEditionTests {
     @DisplayName("should update status and raise event when approving review")
     void shouldUpdateStatusAndRaiseEventWhenApproving() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
@@ -91,8 +91,8 @@ public class ReviewEditionTests {
     @DisplayName("should update status and comment and raise event when rejecting review")
     void shouldUpdateStatusAndRaiseEventWhenRejecting() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
@@ -113,8 +113,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to reject review without comment")
     void shouldNotBeAbleToRejectReviewWithoutComment() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
@@ -134,8 +134,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to reject review that is not in progress")
     void shouldNotBeAbleToRejectReviewThatIsNotInProgress() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 
@@ -152,8 +152,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to approve review that is not in progress")
     void shouldNotBeAbleToApproveReviewThatIsNotInProgress() {
         var reviewerId = new ReviewerId();
-        var edition = new Edition("Title", new EditorId(), new CategoryId());
-        edition.addNote("Teste 1", longContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Title", new EditorId(), new Category("Category"));
+        edition.addNote("Teste 1", longContent, new AuthorId(), new Editorial("Editorial"));
         edition.closeEdition();
         edition.submitToReview();
 

@@ -1,13 +1,13 @@
 package com.github.fabioper.newsletter.domain.edition;
 
 import com.github.fabioper.newsletter.domain.author.AuthorId;
-import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.common.exceptions.NoteNotFoundException;
 import com.github.fabioper.newsletter.domain.common.exceptions.TotalReadingTimeExceededException;
 import com.github.fabioper.newsletter.domain.edition.events.*;
 import com.github.fabioper.newsletter.domain.editor.EditorId;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;
@@ -23,19 +23,19 @@ public class Edition extends BaseEntity {
     private String title;
     private final EditorId editorId;
     private Status status;
-    private CategoryId categoryId;
+    private Category category;
     private final List<Note> notes;
     private LocalDateTime publicationDate;
 
-    public Edition(String title, EditorId editorId, CategoryId categoryId) {
+    public Edition(String title, EditorId editorId, Category category) {
         Guard.againstNull(title, "title should not be null");
         Guard.againstNull(editorId, "editorId should not be null");
-        Guard.againstNull(categoryId, "categoryId should not be null");
+        Guard.againstNull(category, "category should not be null");
 
         this.id = new EditionId();
         this.title = title;
         this.editorId = editorId;
-        this.categoryId = categoryId;
+        this.category = category;
         this.status = Status.DRAFT;
         this.notes = new ArrayList<>();
 
@@ -59,8 +59,8 @@ public class Edition extends BaseEntity {
         return status;
     }
 
-    public CategoryId getCategoryId() {
-        return categoryId;
+    public Category getCategory() {
+        return category;
     }
 
     public List<Note> getNotes() {
@@ -76,7 +76,7 @@ public class Edition extends BaseEntity {
         String title,
         String content,
         AuthorId authorId,
-        EditorialId editorialId
+        Editorial editorialId
     ) {
         if (!this.status.isDraft()) {
             throw new IllegalStateException("Edition can only be updated if it is in draft state");
@@ -106,7 +106,7 @@ public class Edition extends BaseEntity {
         NoteId noteId,
         String title,
         String content,
-        EditorialId editorialId
+        Editorial editorial
     ) {
         if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
             throw new IllegalStateException("Edition cannot be updated");
@@ -117,7 +117,7 @@ public class Edition extends BaseEntity {
 
         note.updateTitle(title);
         note.updateContent(content);
-        note.updateEditorialId(editorialId);
+        note.updateEditorial(editorial);
 
         raiseEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
     }
@@ -148,16 +148,16 @@ public class Edition extends BaseEntity {
         raiseEvent(new EditionTitleUpdated(this.id.value(), oldTitle, this.title));
     }
 
-    public void updateCategory(CategoryId categoryId) {
+    public void updateCategory(Category category) {
         if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
             throw new IllegalStateException("Edition cannot be updated");
         }
 
-        var oldCategoryId = this.categoryId;
-        this.categoryId = categoryId;
+        var oldCategory = this.category;
+        this.category = category;
 
         raiseEvent(new EditionCategoryUpdated(
-            this.id.value(), oldCategoryId.value(), this.categoryId.value())
+            this.id.value(), oldCategory.getId().value(), this.category.getId().value())
         );
     }
 

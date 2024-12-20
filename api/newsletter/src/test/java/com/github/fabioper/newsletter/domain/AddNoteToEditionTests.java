@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.author.AuthorId;
-import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.events.NoteAddedToEdition;
 import com.github.fabioper.newsletter.domain.editor.EditorId;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -20,8 +20,8 @@ public class AddNoteToEditionTests {
     @Test
     @DisplayName("should add note to edition")
     void shouldAddNoteToEdition() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
-        var noteId = edition.addNote("Title", shortContent, new AuthorId(), new EditorialId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
+        var noteId = edition.addNote("Title", shortContent, new AuthorId(), new Editorial("Editorial"));
 
         assertEquals(1, edition.getNotes().size());
         assertThat(
@@ -33,16 +33,16 @@ public class AddNoteToEditionTests {
     @Test
     @DisplayName("should not add note if edition is published")
     void shouldNotAddNoteToEditionIfEditionIsPublished() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        edition.addNote("Title", "Content", new AuthorId(), new EditorialId());
-        edition.addNote("Title", "Content", new AuthorId(), new EditorialId());
+        edition.addNote("Title", "Content", new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Title", "Content", new AuthorId(), new Editorial("Editorial"));
 
         edition.closeEdition();
 
         assertThrows(
             IllegalStateException.class,
-            () -> edition.addNote("Title", "Content", new AuthorId(), new EditorialId())
+            () -> edition.addNote("Title", "Content", new AuthorId(), new Editorial("Editorial"))
         );
     }
 }

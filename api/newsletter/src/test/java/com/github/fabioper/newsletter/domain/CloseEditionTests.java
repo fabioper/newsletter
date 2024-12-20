@@ -1,12 +1,12 @@
 package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.author.AuthorId;
-import com.github.fabioper.newsletter.domain.category.CategoryId;
+import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionClosedEvent;
 import com.github.fabioper.newsletter.domain.editor.EditorId;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,10 +21,10 @@ public class CloseEditionTests {
     @Test
     @DisplayName("should update status and publication date")
     void shouldUpdateStatusAndPublicationDate() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        edition.addNote("Note 1", longContent, new AuthorId(), new EditorialId());
-        edition.addNote("Note 2", longContent, new AuthorId(), new EditorialId());
+        edition.addNote("Note 1", longContent, new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Note 2", longContent, new AuthorId(), new Editorial("Editorial"));
 
         edition.closeEdition();
 
@@ -39,7 +39,7 @@ public class CloseEditionTests {
     @Test
     @DisplayName("should not publish if edition was already published")
     void shouldNotPublishIfEditionAlreadyPublished() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::closeEdition);
         assertThat(edition.getDomainEvents(), not(hasItems(
@@ -50,12 +50,12 @@ public class CloseEditionTests {
     @Test
     @DisplayName("should not publish if total reading time exceeds limit")
     void shouldNotPublishIfTotalReadingTimeExceedsLimit() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
-        edition.addNote("Note 1", longContent, new AuthorId(), new EditorialId());
-        edition.addNote("Note 2", longContent, new AuthorId(), new EditorialId());
-        edition.addNote("Note 3", longContent, new AuthorId(), new EditorialId());
-        edition.addNote("Note 4", longContent, new AuthorId(), new EditorialId());
+        edition.addNote("Note 1", longContent, new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Note 2", longContent, new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Note 3", longContent, new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Note 4", longContent, new AuthorId(), new Editorial("Editorial"));
 
         assertThrows(IllegalStateException.class, edition::closeEdition);
 
@@ -70,7 +70,7 @@ public class CloseEditionTests {
     @Test
     @DisplayName("should not publish if edition has no notes")
     void shouldNotPublishIfEditionHasNoNotes() {
-        var edition = new Edition("Edition", new EditorId(), new CategoryId());
+        var edition = new Edition("Edition", new EditorId(), new Category("Category"));
 
         assertThrows(IllegalStateException.class, edition::closeEdition);
         assertEquals(Status.DRAFT, edition.getStatus());

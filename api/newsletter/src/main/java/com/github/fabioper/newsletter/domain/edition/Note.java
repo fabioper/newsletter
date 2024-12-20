@@ -6,7 +6,7 @@ import com.github.fabioper.newsletter.domain.edition.events.NoteContentUpdatedEv
 import com.github.fabioper.newsletter.domain.edition.events.NoteCreatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteEditorialUpdatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteTitleUpdatedEvent;
-import com.github.fabioper.newsletter.domain.editorial.EditorialId;
+import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 public class Note extends BaseEntity {
@@ -14,19 +14,19 @@ public class Note extends BaseEntity {
     private String title;
     private String content;
     private final AuthorId authorId;
-    private EditorialId editorialId;
+    private Editorial editorial;
 
-    Note(String title, String content, AuthorId authorId, EditorialId editorialId) {
+    Note(String title, String content, AuthorId authorId, Editorial editorial) {
         Guard.againstNull(title, "title should not be null");
         Guard.againstNull(content, "content should not be null");
-        Guard.againstNull(editorialId, "editorialId should not be null");
+        Guard.againstNull(editorial, "editorialId should not be null");
         Guard.againstNull(authorId, "authorId should not be null");
 
         this.id = new NoteId();
         this.title = title;
         this.content = content;
         this.authorId = authorId;
-        this.editorialId = editorialId;
+        this.editorial = editorial;
 
         raiseEvent(new NoteCreatedEvent(this.id.value()));
     }
@@ -48,8 +48,8 @@ public class Note extends BaseEntity {
         return authorId;
     }
 
-    public EditorialId getEditorialId() {
-        return editorialId;
+    public Editorial getEditorial() {
+        return editorial;
     }
 
     public ReadingTime getReadingTime() {
@@ -76,12 +76,16 @@ public class Note extends BaseEntity {
         raiseEvent(new NoteContentUpdatedEvent(this.id.value(), oldContent, content));
     }
 
-    public void updateEditorialId(EditorialId editorialId) {
-        var oldEditorialId = this.editorialId;
-        if (oldEditorialId.equals(editorialId)) return;
+    public void updateEditorial(Editorial editorial) {
+        var oldEditorial = this.editorial;
+        if (oldEditorial.equals(editorial)) return;
 
-        this.editorialId = editorialId;
+        this.editorial = editorial;
 
-        raiseEvent(new NoteEditorialUpdatedEvent(this.id.value(), oldEditorialId.value(), editorialId.value()));
+        raiseEvent(new NoteEditorialUpdatedEvent(
+            this.id.value(),
+            oldEditorial.getId().value(),
+            editorial.getId().value()
+        ));
     }
 }

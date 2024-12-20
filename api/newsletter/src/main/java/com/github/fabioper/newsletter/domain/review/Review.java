@@ -2,7 +2,6 @@ package com.github.fabioper.newsletter.domain.review;
 
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletter.domain.edition.EditionId;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.review.events.ReviewApprovedEvent;
 import com.github.fabioper.newsletter.domain.review.events.ReviewRejectedEvent;
@@ -13,13 +12,13 @@ import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 public class Review extends BaseEntity {
     private final ReviewId id;
     private final ReviewerId reviewerId;
-    private final EditionId editionId;
+    private final Edition edition;
     private ReviewStatus status;
     private String comment;
 
-    private Review(EditionId editionId, ReviewerId reviewerId) {
+    private Review(Edition edition, ReviewerId reviewerId) {
         this.id = new ReviewId();
-        this.editionId = editionId;
+        this.edition = edition;
         this.reviewerId = reviewerId;
         this.status = ReviewStatus.IN_PROGRESS;
         this.comment = "";
@@ -40,8 +39,8 @@ public class Review extends BaseEntity {
         return reviewerId;
     }
 
-    public EditionId getEditionId() {
-        return editionId;
+    public Edition getEdition() {
+        return edition;
     }
 
     public ReviewStatus getStatus() {
@@ -69,7 +68,7 @@ public class Review extends BaseEntity {
 
     public static Review startReviewOf(Edition edition, ReviewerId reviewerId) {
         ensureEditionIsAvailableForReview(edition);
-        return new Review(edition.getId(), reviewerId);
+        return new Review(edition, reviewerId);
     }
 
     private static void ensureReviewIsInProgress(Review review) {
