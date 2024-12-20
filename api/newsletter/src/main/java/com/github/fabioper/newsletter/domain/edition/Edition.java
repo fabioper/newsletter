@@ -78,9 +78,7 @@ public class Edition extends BaseEntity {
         UUID authorId,
         Editorial editorial
     ) {
-        if (!this.status.isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
-        }
+        ensureEditionCanBeUpdated();
 
         var note = new Note(title, content, authorId, editorial);
         notes.add(note);
@@ -91,9 +89,7 @@ public class Edition extends BaseEntity {
     }
 
     public void removeNote(UUID noteId) {
-        if (!this.status.isDraft()) {
-            throw new IllegalStateException("Edition can only be updated if it is in draft state");
-        }
+        ensureEditionCanBeUpdated();
 
         var note = notes.stream()
             .filter(n -> n.getId().equals(noteId)).findFirst()
@@ -108,9 +104,7 @@ public class Edition extends BaseEntity {
         String content,
         Editorial editorial
     ) {
-        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
-            throw new IllegalStateException("Edition cannot be updated");
-        }
+        ensureEditionCanBeUpdated();
 
         var note = notes.stream().filter(n -> n.getId().equals(noteId)).findFirst()
             .orElseThrow(NoteNotFoundException::new);
@@ -149,9 +143,7 @@ public class Edition extends BaseEntity {
     }
 
     public void updateCategory(Category category) {
-        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
-            throw new IllegalStateException("Edition cannot be updated");
-        }
+        ensureEditionCanBeUpdated();
 
         var oldCategory = this.category;
         this.category = category;
@@ -198,6 +190,12 @@ public class Edition extends BaseEntity {
         }
 
         this.status = Status.UNDER_REVIEW;
+    }
+
+    private void ensureEditionCanBeUpdated() {
+        if (!this.status.isDraft() && !this.status.isPendingAdjustments()) {
+            throw new IllegalStateException("Edition cannot be updated");
+        }
     }
 
     @Override
