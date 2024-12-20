@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.domain.common;
+package com.github.fabioper.newsletter.domain.shared;
 
 public class Guard {
     public static void againstNull(Object value, String message) {

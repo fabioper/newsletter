@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain.edition;
 
-import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.edition.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteCreatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteEditorialUpdatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteTitleUpdatedEvent;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.shared.Guard;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.Objects;

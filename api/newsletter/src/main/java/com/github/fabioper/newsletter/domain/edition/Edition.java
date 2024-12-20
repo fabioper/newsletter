@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain.edition;
 
 import com.github.fabioper.newsletter.domain.category.Category;
-import com.github.fabioper.newsletter.domain.common.Guard;
-import com.github.fabioper.newsletter.domain.common.exceptions.NoteNotFoundException;
-import com.github.fabioper.newsletter.domain.common.exceptions.TotalReadingTimeExceededException;
 import com.github.fabioper.newsletter.domain.edition.events.*;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
+import com.github.fabioper.newsletter.domain.shared.Guard;
+import com.github.fabioper.newsletter.domain.shared.exceptions.NoteNotFoundException;
+import com.github.fabioper.newsletter.domain.shared.exceptions.TotalReadingTimeExceededException;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;

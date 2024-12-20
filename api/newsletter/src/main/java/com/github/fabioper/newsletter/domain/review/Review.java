@@ -1,11 +1,11 @@
 package com.github.fabioper.newsletter.domain.review;
 
-import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.review.events.ReviewApprovedEvent;
 import com.github.fabioper.newsletter.domain.review.events.ReviewRejectedEvent;
 import com.github.fabioper.newsletter.domain.review.events.ReviewStartedEvent;
+import com.github.fabioper.newsletter.domain.shared.Guard;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.util.Objects;

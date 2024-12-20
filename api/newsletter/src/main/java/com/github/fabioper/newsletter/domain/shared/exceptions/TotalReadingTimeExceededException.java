@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.domain.common.exceptions;
+package com.github.fabioper.newsletter.domain.shared.exceptions;
 
 public class TotalReadingTimeExceededException extends IllegalStateException {
     public TotalReadingTimeExceededException(Integer limitInMinutes) {
