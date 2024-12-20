@@ -1,49 +1,49 @@
 package com.github.fabioper.newsletter.domain.edition;
 
-import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.common.exceptions.NoteNotFoundException;
 import com.github.fabioper.newsletter.domain.common.exceptions.TotalReadingTimeExceededException;
 import com.github.fabioper.newsletter.domain.edition.events.*;
-import com.github.fabioper.newsletter.domain.editor.EditorId;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
+import java.util.UUID;
 
 import static java.util.Collections.unmodifiableList;
 
 public class Edition extends BaseEntity {
     private static final int READING_TIME_LIMIT_IN_MINUTES = 8;
 
-    private final EditionId id;
+    private final UUID id;
     private String title;
-    private final EditorId editorId;
+    private UUID editorId;
     private Status status;
     private Category category;
-    private final List<Note> notes;
+    private List<Note> notes;
     private LocalDateTime publicationDate;
 
-    public Edition(String title, EditorId editorId, Category category) {
+    public Edition(String title, UUID editorId, Category category) {
         Guard.againstNull(title, "title should not be null");
         Guard.againstNull(editorId, "editorId should not be null");
         Guard.againstNull(category, "category should not be null");
 
-        this.id = new EditionId();
+        this.id = UUID.randomUUID();
         this.title = title;
         this.editorId = editorId;
         this.category = category;
         this.status = Status.DRAFT;
         this.notes = new ArrayList<>();
 
-        raiseEvent(new EditionCreatedEvent(this.id.value()));
+        raiseEvent(new EditionCreatedEvent(this.id));
     }
 
     //region Getters
-    public EditionId getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -51,7 +51,7 @@ public class Edition extends BaseEntity {
         return title;
     }
 
-    public EditorId getEditorId() {
+    public UUID getEditorId() {
         return editorId;
     }
 
@@ -72,25 +72,25 @@ public class Edition extends BaseEntity {
     }
     //endregion
 
-    public NoteId addNote(
+    public UUID addNote(
         String title,
         String content,
-        AuthorId authorId,
-        Editorial editorialId
+        UUID authorId,
+        Editorial editorial
     ) {
         if (!this.status.isDraft()) {
             throw new IllegalStateException("Edition can only be updated if it is in draft state");
         }
 
-        var note = new Note(title, content, authorId, editorialId);
+        var note = new Note(title, content, authorId, editorial);
         notes.add(note);
 
-        raiseEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
+        raiseEvent(new NoteAddedToEdition(note.getId(), this.id));
 
         return note.getId();
     }
 
-    public void removeNote(NoteId noteId) {
+    public void removeNote(UUID noteId) {
         if (!this.status.isDraft()) {
             throw new IllegalStateException("Edition can only be updated if it is in draft state");
         }
@@ -103,7 +103,7 @@ public class Edition extends BaseEntity {
     }
 
     public void updateNote(
-        NoteId noteId,
+        UUID noteId,
         String title,
         String content,
         Editorial editorial
@@ -119,7 +119,7 @@ public class Edition extends BaseEntity {
         note.updateContent(content);
         note.updateEditorial(editorial);
 
-        raiseEvent(new NoteAddedToEdition(note.getId().value(), this.id.value()));
+        raiseEvent(new NoteAddedToEdition(note.getId(), this.id));
     }
 
     public void closeEdition() {
@@ -134,7 +134,7 @@ public class Edition extends BaseEntity {
         this.status = Status.CLOSED;
         this.publicationDate = LocalDateTime.now();
 
-        raiseEvent(new EditionClosedEvent(this.id.value()));
+        raiseEvent(new EditionClosedEvent(this.id));
     }
 
     public void updateTitle(String title) {
@@ -145,7 +145,7 @@ public class Edition extends BaseEntity {
         var oldTitle = this.title;
         this.title = title;
 
-        raiseEvent(new EditionTitleUpdated(this.id.value(), oldTitle, this.title));
+        raiseEvent(new EditionTitleUpdated(this.id, oldTitle, this.title));
     }
 
     public void updateCategory(Category category) {
@@ -157,7 +157,7 @@ public class Edition extends BaseEntity {
         this.category = category;
 
         raiseEvent(new EditionCategoryUpdated(
-            this.id.value(), oldCategory.getId().value(), this.category.getId().value())
+            this.id, oldCategory.getId(), this.category.getId())
         );
     }
 
@@ -173,7 +173,7 @@ public class Edition extends BaseEntity {
         var oldStatus = this.status;
         this.status = Status.AVAILABLE_FOR_REVIEW;
 
-        raiseEvent(new EditionStatusChanges(this.id.value(), oldStatus, this.status));
+        raiseEvent(new EditionStatusChanges(this.id, oldStatus, this.status));
     }
 
     public void approve() {
@@ -198,5 +198,18 @@ public class Edition extends BaseEntity {
         }
 
         this.status = Status.UNDER_REVIEW;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Edition edition = (Edition) object;
+        return Objects.equals(getId(), edition.getId());
     }
 }

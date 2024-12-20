@@ -4,9 +4,10 @@ import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCreatedEvent;
-import com.github.fabioper.newsletter.domain.editor.EditorId;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.hasItems;
@@ -18,7 +19,7 @@ class CreateEditionTests {
     @Test
     @DisplayName("should create as a draft")
     void shouldCreateEditionAsADraft() {
-        var editorId = new EditorId();
+        var editorId = UUID.randomUUID();
         var category = new Category("Category");
         var edition = new Edition("Edition", editorId, category);
 
@@ -30,7 +31,7 @@ class CreateEditionTests {
         assertNull(edition.getPublicationDate());
 
         assertThat(edition.getDomainEvents(), hasItems(
-            new EditionCreatedEvent(edition.getId().value())
+            new EditionCreatedEvent(edition.getId())
         ));
     }
 }

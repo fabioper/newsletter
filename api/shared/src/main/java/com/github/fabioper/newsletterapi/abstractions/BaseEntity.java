@@ -14,8 +14,4 @@ public abstract class BaseEntity {
     protected void raiseEvent(DomainEvent domainEvent) {
         domainEvents.add(domainEvent);
     }
-
-    public void clearEvents() {
-        domainEvents.clear();
-    }
 }

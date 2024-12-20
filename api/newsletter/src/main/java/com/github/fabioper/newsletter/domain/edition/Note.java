@@ -1,6 +1,5 @@
 package com.github.fabioper.newsletter.domain.edition;
 
-import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.common.Guard;
 import com.github.fabioper.newsletter.domain.edition.events.NoteContentUpdatedEvent;
 import com.github.fabioper.newsletter.domain.edition.events.NoteCreatedEvent;
@@ -9,30 +8,33 @@ import com.github.fabioper.newsletter.domain.edition.events.NoteTitleUpdatedEven
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
 
+import java.util.Objects;
+import java.util.UUID;
+
 public class Note extends BaseEntity {
-    private final NoteId id;
+    private final UUID id;
     private String title;
     private String content;
-    private final AuthorId authorId;
+    private UUID authorId;
     private Editorial editorial;
 
-    Note(String title, String content, AuthorId authorId, Editorial editorial) {
+    Note(String title, String content, UUID authorId, Editorial editorial) {
         Guard.againstNull(title, "title should not be null");
         Guard.againstNull(content, "content should not be null");
         Guard.againstNull(editorial, "editorialId should not be null");
         Guard.againstNull(authorId, "authorId should not be null");
 
-        this.id = new NoteId();
+        this.id = UUID.randomUUID();
         this.title = title;
         this.content = content;
         this.authorId = authorId;
         this.editorial = editorial;
 
-        raiseEvent(new NoteCreatedEvent(this.id.value()));
+        raiseEvent(new NoteCreatedEvent(this.id));
     }
 
     //region Getters
-    public NoteId getId() {
+    public UUID getId() {
         return id;
     }
 
@@ -44,7 +46,7 @@ public class Note extends BaseEntity {
         return content;
     }
 
-    public AuthorId getAuthorId() {
+    public UUID getAuthorId() {
         return authorId;
     }
 
@@ -64,7 +66,7 @@ public class Note extends BaseEntity {
 
         this.title = title;
 
-        raiseEvent(new NoteTitleUpdatedEvent(this.id.value(), oldTitle, title));
+        raiseEvent(new NoteTitleUpdatedEvent(this.id, oldTitle, title));
     }
 
     public void updateContent(String content) {
@@ -73,7 +75,7 @@ public class Note extends BaseEntity {
 
         this.content = content;
 
-        raiseEvent(new NoteContentUpdatedEvent(this.id.value(), oldContent, content));
+        raiseEvent(new NoteContentUpdatedEvent(this.id, oldContent, content));
     }
 
     public void updateEditorial(Editorial editorial) {
@@ -83,9 +85,22 @@ public class Note extends BaseEntity {
         this.editorial = editorial;
 
         raiseEvent(new NoteEditorialUpdatedEvent(
-            this.id.value(),
-            oldEditorial.getId().value(),
-            editorial.getId().value()
+            this.id,
+            oldEditorial.getId(),
+            editorial.getId()
         ));
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getId());
+    }
+
+    @Override
+    public boolean equals(Object object) {
+        if (this == object) return true;
+        if (object == null || getClass() != object.getClass()) return false;
+        Note note = (Note) object;
+        return Objects.equals(getId(), note.getId());
     }
 }

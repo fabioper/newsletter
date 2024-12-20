@@ -1,14 +1,14 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.author.AuthorId;
 import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCategoryUpdated;
 import com.github.fabioper.newsletter.domain.edition.events.EditionTitleUpdated;
-import com.github.fabioper.newsletter.domain.editor.EditorId;
 import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+
+import java.util.UUID;
 
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -23,7 +23,7 @@ public class UpdateEditionTests {
     @DisplayName("should update fields correctly")
     void shouldUpdateFieldsCorrectly() {
         var category = new Category("Category");
-        var edition = new Edition("Edition", new EditorId(), category);
+        var edition = new Edition("Edition", UUID.randomUUID(), category);
 
         edition.updateTitle("Edited title");
 
@@ -33,8 +33,8 @@ public class UpdateEditionTests {
         assertEquals("Edited title", edition.getTitle());
         assertEquals(otherCategory, edition.getCategory());
         assertThat(edition.getDomainEvents(), hasItems(
-            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
-            new EditionCategoryUpdated(edition.getId().value(), category.getId().value(), otherCategory.getId().value())
+            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId(), category.getId(), otherCategory.getId())
         ));
     }
 
@@ -42,8 +42,8 @@ public class UpdateEditionTests {
     @DisplayName("should update fields correctly if edition is pending adjustments")
     void shouldUpdateFieldsIfEditionIsPendingAdjustments() {
         var category = new Category("Category");
-        var edition = new Edition("Edition", new EditorId(), category);
-        edition.addNote("Title", shortContent, new AuthorId(), new Editorial("Editorial"));
+        var edition = new Edition("Edition", UUID.randomUUID(), category);
+        edition.addNote("Title", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
 
         edition.closeEdition();
         edition.submitToReview();
@@ -58,8 +58,8 @@ public class UpdateEditionTests {
         assertEquals("Edited title", edition.getTitle());
         assertEquals(otherCategory, edition.getCategory());
         assertThat(edition.getDomainEvents(), hasItems(
-            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
-            new EditionCategoryUpdated(edition.getId().value(), category.getId().value(), otherCategory.getId().value())
+            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
+            new EditionCategoryUpdated(edition.getId(), category.getId(), otherCategory.getId())
         ));
     }
 
@@ -67,9 +67,9 @@ public class UpdateEditionTests {
     @DisplayName("should not update if edition is published")
     void shouldNotUpdateIfEditionIsPublished() {
         var originalCategory = new Category("Category");
-        var edition = new Edition("Edition", new EditorId(), originalCategory);
+        var edition = new Edition("Edition", UUID.randomUUID(), originalCategory);
 
-        edition.addNote("Note", "Content", new AuthorId(), new Editorial("Editorial"));
+        edition.addNote("Note", "Content", UUID.randomUUID(), new Editorial("Editorial"));
 
         edition.closeEdition();
 
@@ -84,11 +84,11 @@ public class UpdateEditionTests {
         assertEquals(originalCategory, edition.getCategory());
 
         assertThat(edition.getDomainEvents(), not(hasItems(
-            new EditionTitleUpdated(edition.getId().value(), "Edition", "Edited title"),
+            new EditionTitleUpdated(edition.getId(), "Edition", "Edited title"),
             new EditionCategoryUpdated(
-                edition.getId().value(),
-                originalCategory.getId().value(),
-                otherCategory.getId().value()
+                edition.getId(),
+                originalCategory.getId(),
+                otherCategory.getId()
             )
         )));
     }
