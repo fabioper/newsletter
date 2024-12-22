@@ -1,8 +1,6 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -16,10 +14,10 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should remove it if note is assigned to edition")
     void shouldRemoveNoteIfPresent() {
-        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), UUID.randomUUID());
 
-        var note1 = edition.addNote("Title", "Content", UUID.randomUUID(), new Editorial("Editorial"));
-        var note2 = edition.addNote("Title 2", "Content", UUID.randomUUID(), new Editorial("Editorial"));
+        var note1 = edition.addNote("Title", "Content", UUID.randomUUID(), UUID.randomUUID());
+        var note2 = edition.addNote("Title 2", "Content", UUID.randomUUID(), UUID.randomUUID());
 
         edition.removeNote(note2);
 
@@ -31,9 +29,9 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should throw exception if note is not assigned to edition")
     void shouldThrowIfNotPresent() {
-        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), UUID.randomUUID());
 
-        edition.addNote("Title", "Content", UUID.randomUUID(), new Editorial("Editorial"));
+        edition.addNote("Title", "Content", UUID.randomUUID(), UUID.randomUUID());
 
         assertThrows(IllegalArgumentException.class, () -> edition.removeNote(UUID.randomUUID()));
     }
@@ -41,10 +39,10 @@ public class RemoveNoteFromEditionTests {
     @Test
     @DisplayName("should not remove if edition is published")
     void shouldNotRemoveIfEditionIsPublished() {
-        var edition = new Edition("Edition", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Edition", UUID.randomUUID(), UUID.randomUUID());
 
-        var note1 = edition.addNote("Title", longContent, UUID.randomUUID(), new Editorial("Editorial"));
-        var note2 = edition.addNote("Title 2", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var note1 = edition.addNote("Title", longContent, UUID.randomUUID(), UUID.randomUUID());
+        var note2 = edition.addNote("Title 2", longContent, UUID.randomUUID(), UUID.randomUUID());
 
         edition.closeEdition();
 

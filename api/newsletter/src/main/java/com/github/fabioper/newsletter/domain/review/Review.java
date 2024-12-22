@@ -14,7 +14,7 @@ import java.util.UUID;
 public class Review extends BaseEntity {
     private final UUID id;
     private final UUID reviewerId;
-    private final Edition edition;
+    private final UUID editionId;
     private ReviewStatus status;
     private String comment;
 
@@ -22,7 +22,7 @@ public class Review extends BaseEntity {
         ensureEditionIsAvailableForReview(edition);
 
         this.id = UUID.randomUUID();
-        this.edition = edition;
+        this.editionId = edition.getId();
         this.reviewerId = reviewerId;
         this.status = ReviewStatus.IN_PROGRESS;
         this.comment = "";
@@ -31,7 +31,6 @@ public class Review extends BaseEntity {
     }
 
     //region Getters
-
     public UUID getId() {
         return id;
     }
@@ -44,14 +43,14 @@ public class Review extends BaseEntity {
         return reviewerId;
     }
 
-    //endregion
-    public Edition getEdition() {
-        return edition;
+    public UUID getEditionId() {
+        return editionId;
     }
 
     public ReviewStatus getStatus() {
         return status;
     }
+    //endregion
 
     public void approve() {
         ensureReviewIsInProgress(this);

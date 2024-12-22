@@ -1,8 +1,6 @@
 package com.github.fabioper.newsletter.domain.edition;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.events.*;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletter.domain.shared.Guard;
 import com.github.fabioper.newsletter.domain.shared.exceptions.NoteNotFoundException;
 import com.github.fabioper.newsletter.domain.shared.exceptions.TotalReadingTimeExceededException;
@@ -23,19 +21,19 @@ public class Edition extends BaseEntity {
     private String title;
     private UUID editorId;
     private Status status;
-    private Category category;
+    private UUID categoryId;
     private List<Note> notes;
     private LocalDateTime publicationDate;
 
-    public Edition(String title, UUID editorId, Category category) {
+    public Edition(String title, UUID editorId, UUID categoryId) {
         Guard.againstNull(title, "title should not be null");
         Guard.againstNull(editorId, "editorId should not be null");
-        Guard.againstNull(category, "category should not be null");
+        Guard.againstNull(categoryId, "category should not be null");
 
         this.id = UUID.randomUUID();
         this.title = title;
         this.editorId = editorId;
-        this.category = category;
+        this.categoryId = categoryId;
         this.status = Status.DRAFT;
         this.notes = new ArrayList<>();
 
@@ -59,8 +57,8 @@ public class Edition extends BaseEntity {
         return status;
     }
 
-    public Category getCategory() {
-        return category;
+    public UUID getCategoryId() {
+        return categoryId;
     }
 
     public List<Note> getNotes() {
@@ -76,11 +74,11 @@ public class Edition extends BaseEntity {
         String title,
         String content,
         UUID authorId,
-        Editorial editorial
+        UUID editorialId
     ) {
         ensureEditionCanBeUpdated();
 
-        var note = new Note(title, content, authorId, editorial);
+        var note = new Note(title, content, authorId, editorialId);
         notes.add(note);
 
         raiseEvent(new NoteAddedToEdition(note.getId(), this.id));
@@ -102,7 +100,7 @@ public class Edition extends BaseEntity {
         UUID noteId,
         String title,
         String content,
-        Editorial editorial
+        UUID editorialId
     ) {
         ensureEditionCanBeUpdated();
 
@@ -111,7 +109,7 @@ public class Edition extends BaseEntity {
 
         note.updateTitle(title);
         note.updateContent(content);
-        note.updateEditorial(editorial);
+        note.updateEditorial(editorialId);
 
         raiseEvent(new NoteAddedToEdition(note.getId(), this.id));
     }
@@ -142,19 +140,13 @@ public class Edition extends BaseEntity {
         raiseEvent(new EditionTitleUpdated(this.id, oldTitle, this.title));
     }
 
-    public void updateCategory(Category category) {
+    public void updateCategory(UUID categoryId) {
         ensureEditionCanBeUpdated();
 
-        var oldCategory = this.category;
-        this.category = category;
+        var oldCategoryId = this.categoryId;
+        this.categoryId = categoryId;
 
-        raiseEvent(new EditionCategoryUpdated(
-            this.id, oldCategory.getId(), this.category.getId())
-        );
-    }
-
-    private int getTotalReadingTime() {
-        return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
+        raiseEvent(new EditionCategoryUpdated(this.id, oldCategoryId, this.categoryId));
     }
 
     public void submitToReview() {
@@ -190,6 +182,10 @@ public class Edition extends BaseEntity {
         }
 
         this.status = Status.UNDER_REVIEW;
+    }
+
+    private int getTotalReadingTime() {
+        return notes.stream().mapToInt(note -> note.getReadingTime().minutes()).sum();
     }
 
     private void ensureEditionCanBeUpdated() {

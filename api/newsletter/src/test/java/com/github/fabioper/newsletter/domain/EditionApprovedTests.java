@@ -1,9 +1,7 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -18,8 +16,8 @@ public class EditionApprovedTests {
     @Test
     @DisplayName("should update status to approved")
     void shouldUpdateStatusToApproved() {
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Note1", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Note1", shortContent, UUID.randomUUID(), UUID.randomUUID());
 
         edition.closeEdition();
         edition.submitToReview();
@@ -32,8 +30,8 @@ public class EditionApprovedTests {
     @Test
     @DisplayName("should update status if it was not previously under review")
     void shouldNotApproveIfItIsNotUnderReview() {
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Note1", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Note1", shortContent, UUID.randomUUID(), UUID.randomUUID());
 
         edition.closeEdition();
         edition.submitToReview();

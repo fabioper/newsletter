@@ -1,8 +1,6 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import com.github.fabioper.newsletter.domain.review.Review;
 import com.github.fabioper.newsletter.domain.review.ReviewStatus;
 import com.github.fabioper.newsletter.domain.review.events.ReviewApprovedEvent;
@@ -27,15 +25,15 @@ public class ReviewEditionTests {
     @DisplayName("should start review with in progress status")
     void shouldStartWithInProgressStatus() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
         var review = new Review(edition, reviewerId);
 
         assertEquals(ReviewStatus.IN_PROGRESS, review.getStatus());
-        assertEquals(edition, review.getEdition());
+        assertEquals(edition.getId(), review.getEditionId());
         assertEquals(reviewerId, review.getReviewerId());
     }
 
@@ -43,8 +41,8 @@ public class ReviewEditionTests {
     @DisplayName("should raise event when starting review")
     void shouldRaiseEventWhenStartingReview() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
@@ -59,9 +57,9 @@ public class ReviewEditionTests {
     @DisplayName("should not start review if edition is not closed")
     void shouldNotStartIfEditionIsNotClosed() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Test", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Test", UUID.randomUUID(), UUID.randomUUID());
 
-        edition.addNote("Note", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
+        edition.addNote("Note", shortContent, UUID.randomUUID(), UUID.randomUUID());
 
         assertThrows(IllegalStateException.class, () -> new Review(edition, reviewerId));
     }
@@ -70,8 +68,8 @@ public class ReviewEditionTests {
     @DisplayName("should update status and raise event when approving review")
     void shouldUpdateStatusAndRaiseEventWhenApproving() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
@@ -90,8 +88,8 @@ public class ReviewEditionTests {
     @DisplayName("should update status and comment and raise event when rejecting review")
     void shouldUpdateStatusAndRaiseEventWhenRejecting() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
@@ -112,8 +110,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to reject review without comment")
     void shouldNotBeAbleToRejectReviewWithoutComment() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
@@ -133,8 +131,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to reject review that is not in progress")
     void shouldNotBeAbleToRejectReviewThatIsNotInProgress() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 
@@ -151,8 +149,8 @@ public class ReviewEditionTests {
     @DisplayName("should not be able to approve review that is not in progress")
     void shouldNotBeAbleToApproveReviewThatIsNotInProgress() {
         var reviewerId = UUID.randomUUID();
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
-        edition.addNote("Teste 1", longContent, UUID.randomUUID(), new Editorial("Editorial"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
+        edition.addNote("Teste 1", longContent, UUID.randomUUID(), UUID.randomUUID());
         edition.closeEdition();
         edition.submitToReview();
 

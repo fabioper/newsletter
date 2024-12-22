@@ -1,6 +1,5 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionCreatedEvent;
@@ -20,13 +19,13 @@ class CreateEditionTests {
     @DisplayName("should create as a draft")
     void shouldCreateEditionAsADraft() {
         var editorId = UUID.randomUUID();
-        var category = new Category("Category");
-        var edition = new Edition("Edition", editorId, category);
+        var categoryId = UUID.randomUUID();
+        var edition = new Edition("Edition", editorId, categoryId);
 
         assertNotNull(edition.getId());
         assertEquals("Edition", edition.getTitle());
         assertEquals(Status.DRAFT, edition.getStatus());
-        assertEquals(category, edition.getCategory());
+        assertEquals(categoryId, edition.getCategoryId());
         assertEquals(editorId, edition.getEditorId());
         assertNull(edition.getPublicationDate());
 

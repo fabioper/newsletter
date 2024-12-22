@@ -1,10 +1,8 @@
 package com.github.fabioper.newsletter.domain;
 
-import com.github.fabioper.newsletter.domain.category.Category;
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
 import com.github.fabioper.newsletter.domain.edition.events.EditionStatusChanges;
-import com.github.fabioper.newsletter.domain.editorial.Editorial;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -21,9 +19,9 @@ public class SubmitEditionToReviewTests {
     @Test
     @DisplayName("should update edition status")
     void shouldUpdateEditionStatus() {
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
 
-        edition.addNote("Note 1", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
+        edition.addNote("Note 1", shortContent, UUID.randomUUID(), UUID.randomUUID());
 
         edition.closeEdition();
         edition.submitToReview();
@@ -37,9 +35,9 @@ public class SubmitEditionToReviewTests {
     @Test
     @DisplayName("should not update edition if status is different than closed")
     void shouldNotUpdateEditionIfStatusIsNotClosed() {
-        var edition = new Edition("Title", UUID.randomUUID(), new Category("Category"));
+        var edition = new Edition("Title", UUID.randomUUID(), UUID.randomUUID());
 
-        edition.addNote("Note 1", shortContent, UUID.randomUUID(), new Editorial("Editorial"));
+        edition.addNote("Note 1", shortContent, UUID.randomUUID(), UUID.randomUUID());
 
         var originalStatus = edition.getStatus();
 
