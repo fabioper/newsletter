@@ -2,12 +2,15 @@ package com.github.fabioper.newsletter.domain;
 
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.Status;
+import com.github.fabioper.newsletter.domain.edition.events.EditionStatusChanges;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.UUID;
 
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.hasItems;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -25,6 +28,9 @@ public class EditionRejectedTests {
         edition.putAsPendingAdjustments();
 
         assertEquals(Status.PENDING_ADJUSTMENTS, edition.getStatus());
+        assertThat(edition.getDomainEvents(), hasItems(
+            new EditionStatusChanges(edition.getId(), Status.UNDER_REVIEW, Status.PENDING_ADJUSTMENTS)
+        ));
     }
 
     @Test

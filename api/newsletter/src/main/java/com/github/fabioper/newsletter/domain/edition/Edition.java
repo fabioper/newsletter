@@ -124,7 +124,8 @@ public class Edition extends AggregateRoot {
     ) {
         ensureEditionCanBeUpdated();
 
-        var note = notes.stream().filter(n -> n.getId().equals(noteId)).findFirst()
+        var note = notes.stream()
+            .filter(n -> n.getId().equals(noteId)).findFirst()
             .orElseThrow(NoteNotFoundException::new);
 
         updateNoteTitle(note, title);
@@ -210,7 +211,10 @@ public class Edition extends AggregateRoot {
             throw new IllegalStateException("Edition must be under review to be approved");
         }
 
+        var oldStatus = this.status;
         this.status = Status.APPROVED;
+
+        raiseEvent(new EditionStatusChanges(this.id, oldStatus, this.status));
     }
 
     public void putAsPendingAdjustments() {
@@ -218,7 +222,10 @@ public class Edition extends AggregateRoot {
             throw new IllegalStateException("Edition must be under review to be rejected");
         }
 
+        var oldStatus = this.status;
         this.status = Status.PENDING_ADJUSTMENTS;
+
+        raiseEvent(new EditionStatusChanges(this.id, oldStatus, this.status));
     }
 
     public void putUnderReview() {
@@ -226,7 +233,10 @@ public class Edition extends AggregateRoot {
             throw new IllegalStateException("Edition must be available for review in order to put it under review");
         }
 
+        var oldStatus = this.status;
         this.status = Status.UNDER_REVIEW;
+
+        raiseEvent(new EditionStatusChanges(this.id, oldStatus, this.status));
     }
 
     private int getTotalReadingTime() {
