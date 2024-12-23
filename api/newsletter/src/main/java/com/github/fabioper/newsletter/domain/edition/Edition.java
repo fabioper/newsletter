@@ -4,7 +4,8 @@ import com.github.fabioper.newsletter.domain.edition.events.*;
 import com.github.fabioper.newsletter.domain.shared.Guard;
 import com.github.fabioper.newsletter.domain.shared.exceptions.NoteNotFoundException;
 import com.github.fabioper.newsletter.domain.shared.exceptions.TotalReadingTimeExceededException;
-import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
+import com.github.fabioper.newsletterapi.abstractions.AggregateRoot;
+import jakarta.persistence.*;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -14,16 +15,35 @@ import java.util.UUID;
 
 import static java.util.Collections.unmodifiableList;
 
-public class Edition extends BaseEntity {
+@Entity
+@Table(name = "editions")
+public class Edition extends AggregateRoot {
     private static final int READING_TIME_LIMIT_IN_MINUTES = 8;
 
-    private final UUID id;
+    @Id
+    private UUID id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private UUID editorId;
+
+    @Column(nullable = false)
     private Status status;
+
+    @Column(nullable = false)
     private UUID categoryId;
+
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
+    @JoinColumn(name = "editionId", nullable = false)
     private List<Note> notes;
+
+    @Column(nullable = false)
     private LocalDateTime publicationDate;
+
+    public Edition() {
+    }
 
     public Edition(String title, UUID editorId, UUID categoryId) {
         Guard.againstNull(title, "title should not be null");
@@ -107,11 +127,36 @@ public class Edition extends BaseEntity {
         var note = notes.stream().filter(n -> n.getId().equals(noteId)).findFirst()
             .orElseThrow(NoteNotFoundException::new);
 
-        note.updateTitle(title);
-        note.updateContent(content);
-        note.updateEditorial(editorialId);
+        updateNoteTitle(note, title);
+        updateNoteContent(note, content);
+        updateNoteEditorial(note, editorialId);
+    }
 
-        raiseEvent(new NoteAddedToEdition(note.getId(), this.id));
+    private void updateNoteTitle(Note note, String title) {
+        var oldTitle = note.getTitle();
+
+        if (!oldTitle.equals(title)) {
+            note.updateTitle(title);
+            raiseEvent(new NoteTitleUpdatedEvent(note.getId(), oldTitle, title));
+        }
+    }
+
+    private void updateNoteContent(Note note, String content) {
+        var oldContent = note.getContent();
+
+        if (!oldContent.equals(content)) {
+            note.updateContent(content);
+            raiseEvent(new NoteContentUpdatedEvent(note.getId(), oldContent, content));
+        }
+    }
+
+    private void updateNoteEditorial(Note note, UUID editorialId) {
+        var oldEditorialId = note.getEditorialId();
+
+        if (!oldEditorialId.equals(editorialId)) {
+            note.updateEditorial(editorialId);
+            raiseEvent(new NoteEditorialUpdatedEvent(note.getId(), oldEditorialId, editorialId));
+        }
     }
 
     public void closeEdition() {

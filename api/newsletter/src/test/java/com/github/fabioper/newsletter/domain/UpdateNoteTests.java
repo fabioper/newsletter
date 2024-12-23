@@ -39,7 +39,7 @@ public class UpdateNoteTests {
         assertEquals(ReadingTime.from(longContent), note.getReadingTime());
 
         assertThat(
-            note.getDomainEvents(),
+            edition.getDomainEvents(),
             hasItems(
                 new NoteTitleUpdatedEvent(noteId, "Title", "New title"),
                 new NoteContentUpdatedEvent(noteId, shortContent, longContent),
@@ -72,7 +72,7 @@ public class UpdateNoteTests {
         assertEquals(ReadingTime.from(longContent), note.getReadingTime());
 
         assertThat(
-            note.getDomainEvents(),
+            edition.getDomainEvents(),
             hasItems(
                 new NoteTitleUpdatedEvent(noteId, "Title", "New title"),
                 new NoteContentUpdatedEvent(noteId, shortContent, longContent),

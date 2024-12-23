@@ -6,17 +6,35 @@ import com.github.fabioper.newsletter.domain.review.events.ReviewApprovedEvent;
 import com.github.fabioper.newsletter.domain.review.events.ReviewRejectedEvent;
 import com.github.fabioper.newsletter.domain.review.events.ReviewStartedEvent;
 import com.github.fabioper.newsletter.domain.shared.Guard;
-import com.github.fabioper.newsletterapi.abstractions.BaseEntity;
+import com.github.fabioper.newsletterapi.abstractions.AggregateRoot;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
 
 import java.util.Objects;
 import java.util.UUID;
 
-public class Review extends BaseEntity {
-    private final UUID id;
-    private final UUID reviewerId;
-    private final UUID editionId;
+@Entity
+@Table(name = "reviews")
+public class Review extends AggregateRoot {
+    @Id
+    private UUID id;
+
+    @Column(nullable = false)
+    private UUID reviewerId;
+
+    @Column(nullable = false)
+    private UUID editionId;
+
+    @Column(nullable = false)
     private ReviewStatus status;
+
+    @Column(nullable = false)
     private String comment;
+
+    public Review() {
+    }
 
     public Review(Edition edition, UUID reviewerId) {
         ensureEditionIsAvailableForReview(edition);
