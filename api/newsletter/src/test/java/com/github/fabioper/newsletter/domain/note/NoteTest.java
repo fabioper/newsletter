@@ -7,27 +7,30 @@ import static org.junit.jupiter.api.Assertions.*;
 class NoteTest {
     @Test
     void shouldCreateNoteWithOpenStatus() {
-        var note = new Note("Note title", "Note content");
+        var authorId = new AuthorId();
+        var note = new Note("Note title", "Note content", authorId);
 
         assertEquals("Note title", note.getTitle());
         assertEquals("Note content", note.getContent());
         assertEquals(NoteStatus.OPEN, note.getStatus());
+        assertEquals(authorId, note.getAuthorId());
         assertNotNull(note.getId());
     }
 
     @Test
     void shouldNotCreateNoteWithEmptyArgument() {
-        assertThrows(IllegalArgumentException.class, () -> new Note(null, "Note content"));
-        assertThrows(IllegalArgumentException.class, () -> new Note("", "Note content"));
-        assertThrows(IllegalArgumentException.class, () -> new Note("  ", "Note content"));
-        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", null));
-        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", ""));
-        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", "  "));
+        assertThrows(IllegalArgumentException.class, () -> new Note(null, "Note content", new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("", "Note content", new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("  ", "Note content", new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", null, new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", "", new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", "  ", new AuthorId()));
+        assertThrows(IllegalArgumentException.class, () -> new Note("Note title", "Note content", null));
     }
 
     @Test
     void shouldUpdateTitle() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
 
         note.updateTitle("Note title updated");
 
@@ -36,7 +39,7 @@ class NoteTest {
 
     @Test
     void shouldNotUpdateTitleWithEmptyArgument() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
 
         assertThrows(IllegalArgumentException.class, () -> note.updateTitle(null));
         assertThrows(IllegalArgumentException.class, () -> note.updateTitle(""));
@@ -45,7 +48,7 @@ class NoteTest {
 
     @Test
     void shouldUpdateContent() {
-        var note = new Note("Note content", "Note content");
+        var note = new Note("Note content", "Note content", new AuthorId());
 
         note.updateContent("Note content updated");
 
@@ -54,7 +57,7 @@ class NoteTest {
 
     @Test
     void shouldNotUpdateContentWithEmptyArgument() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
 
         assertThrows(IllegalArgumentException.class, () -> note.updateContent(null));
         assertThrows(IllegalArgumentException.class, () -> note.updateContent(""));
@@ -63,7 +66,7 @@ class NoteTest {
 
     @Test
     void shouldNotUpdateTitleIfNoteIsClosed() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
         note.close();
 
         assertThrows(IllegalStateException.class, () -> note.updateTitle("Updated"));
@@ -72,7 +75,7 @@ class NoteTest {
 
     @Test
     void shouldNotUpdateContentIfNoteIsClosed() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
         note.close();
 
         assertThrows(IllegalStateException.class, () -> note.updateContent("Updated"));
@@ -81,7 +84,7 @@ class NoteTest {
 
     @Test
     void shouldClose() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
         note.close();
 
         assertEquals(NoteStatus.CLOSED, note.getStatus());
@@ -89,7 +92,7 @@ class NoteTest {
 
     @Test
     void shouldNotCloseIfEditionIsNotOpen() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
         note.close();
 
         assertThrows(IllegalStateException.class, note::close);
@@ -97,7 +100,7 @@ class NoteTest {
 
     @Test
     void shouldOpen() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
 
         note.close();
         assertEquals(NoteStatus.CLOSED, note.getStatus());
@@ -108,7 +111,7 @@ class NoteTest {
 
     @Test
     void shouldNotOpenIfEditionIsNotClosed() {
-        var note = new Note("Note title", "Note content");
+        var note = new Note("Note title", "Note content", new AuthorId());
         assertThrows(IllegalStateException.class, note::open);
         assertEquals(NoteStatus.OPEN, note.getStatus());
     }

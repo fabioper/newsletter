@@ -18,17 +18,23 @@ public class Note {
     @Column(nullable = false, length = 40)
     private NoteStatus status;
 
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "author_id", nullable = false))
+    private AuthorId authorId;
+
     public Note() {
     }
 
-    public Note(String title, String content) {
+    public Note(String title, String content, AuthorId authorId) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
         Guard.againstNullOrEmpty(content, "Content cannot be empty");
+        Guard.againstNullOrEmpty(authorId, "AuthorId cannot be null");
 
         this.id = new NoteId();
         this.title = title;
         this.content = content;
         this.status = NoteStatus.OPEN;
+        this.authorId = authorId;
     }
 
     public NoteId getId() {
@@ -45,6 +51,10 @@ public class Note {
 
     public NoteStatus getStatus() {
         return status;
+    }
+
+    public AuthorId getAuthorId() {
+        return authorId;
     }
 
     public void updateTitle(String title) {

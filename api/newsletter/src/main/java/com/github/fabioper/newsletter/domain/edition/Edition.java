@@ -24,16 +24,22 @@ public class Edition {
     @JoinColumn(name = "edition_id")
     private List<Note> notes;
 
+    @Embedded
+    @AttributeOverride(name = "id", column = @Column(name = "editor_id", nullable = false))
+    private EditorId editorId;
+
     public Edition() {
     }
 
-    public Edition(String title) {
+    public Edition(String title, EditorId editorId) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
+        Guard.againstNullOrEmpty(editorId, "EditorId cannot be null");
 
         this.id = new EditionId();
         this.title = title;
         this.status = EditionStatus.OPEN;
         this.notes = new ArrayList<>();
+        this.editorId = editorId;
     }
 
     public EditionId getId() {
@@ -50,6 +56,10 @@ public class Edition {
 
     public EditionStatus getStatus() {
         return status;
+    }
+
+    public EditorId getEditorId() {
+        return editorId;
     }
 
     public void updateTitle(String title) {
