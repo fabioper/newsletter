@@ -4,6 +4,7 @@ import com.github.fabioper.newsletter.domain.note.AuthorId;
 import com.github.fabioper.newsletter.domain.note.Note;
 import org.junit.jupiter.api.Test;
 
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 
@@ -94,6 +95,17 @@ class EditionTest {
         var edition = new Edition("Edition title", new EditorId());
         edition.assign(new Note("Note title", "Note content", new AuthorId()));
         edition.close();
+
+        assertThrows(IllegalStateException.class, edition::close);
+    }
+
+    @Test
+    void shouldNotCloseEditionIfItsTotalReadingTimeExceedsLimit() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        edition.assign(new Note("Note title", longContent, new AuthorId()));
+        edition.assign(new Note("Note title", longContent, new AuthorId()));
+        edition.assign(new Note("Note title", longContent, new AuthorId()));
 
         assertThrows(IllegalStateException.class, edition::close);
     }

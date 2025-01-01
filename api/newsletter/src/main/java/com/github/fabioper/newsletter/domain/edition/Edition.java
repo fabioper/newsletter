@@ -28,6 +28,8 @@ public class Edition {
     @AttributeOverride(name = "id", column = @Column(name = "editor_id", nullable = false))
     private EditorId editorId;
 
+    private static final int TOTAL_READING_TIME_LIMIT = 8;
+
     public Edition() {
     }
 
@@ -76,8 +78,19 @@ public class Edition {
     public void close() {
         ensureIsOpen();
         ensureIsNotEmpty();
+        ensureTotalReadingTimeDoesNotExceedLimit();
 
         this.status = EditionStatus.CLOSED;
+    }
+
+    private int getTotalReadingTime() {
+        return notes.stream().mapToInt(note -> note.getReadingTime().getMinutes()).sum();
+    }
+
+    private void ensureTotalReadingTimeDoesNotExceedLimit() {
+        if (getTotalReadingTime() > TOTAL_READING_TIME_LIMIT) {
+            throw new IllegalStateException("Total reading time exceeds limit");
+        }
     }
 
     public void submitToReview() {
