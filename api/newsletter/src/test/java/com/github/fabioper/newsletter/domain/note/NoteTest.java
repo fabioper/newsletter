@@ -2,6 +2,8 @@ package com.github.fabioper.newsletter.domain.note;
 
 import org.junit.jupiter.api.Test;
 
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
+import static com.github.fabioper.newsletter.testdata.NoteContentTestData.shortContent;
 import static org.junit.jupiter.api.Assertions.*;
 
 class NoteTest {
@@ -114,5 +116,19 @@ class NoteTest {
         var note = new Note("Note title", "Note content", new AuthorId());
         assertThrows(IllegalStateException.class, note::open);
         assertEquals(NoteStatus.OPEN, note.getStatus());
+    }
+
+    @Test
+    void shouldCalculateReadingTime() {
+        var authorId = new AuthorId();
+        var note = new Note("Note title", shortContent, authorId);
+
+        assertEquals(0, note.getReadingTime().getMinutes());
+        assertEquals(27, note.getReadingTime().getSeconds());
+
+        note.updateContent(longContent);
+
+        assertEquals(3, note.getReadingTime().getMinutes());
+        assertEquals(55, note.getReadingTime().getSeconds());
     }
 }

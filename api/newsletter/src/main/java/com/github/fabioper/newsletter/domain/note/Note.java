@@ -57,6 +57,10 @@ public class Note {
         return authorId;
     }
 
+    public ReadingTime getReadingTime() {
+        return ReadingTime.from(content);
+    }
+
     public void updateTitle(String title) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
         ensureIsOpen();
