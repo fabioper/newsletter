@@ -1,20 +1,26 @@
 package com.github.fabioper.newsletter.domain.note;
 
-import com.github.fabioper.newsletter.domain.edition.Edition;
+import com.github.fabioper.newsletter.domain.edition.EditionId;
+import com.github.fabioper.newsletter.domain.shared.Guard;
 
 public class Note {
     private NoteId id;
     private String title;
-    private NoteContent content;
-    private Edition edition;
+    private String content;
+    private EditionId editionId;
+    private NoteStatus status;
 
     public Note() {
     }
 
-    public Note(String title, NoteContent content, Edition edition) {
+    public Note(String title, String content) {
+        Guard.againstNullOrEmpty(title, "Title cannot be empty");
+        Guard.againstNullOrEmpty(content, "Content cannot be empty");
+
+        this.id = new NoteId();
         this.title = title;
         this.content = content;
-        this.edition = edition;
+        this.status = NoteStatus.OPEN;
     }
 
     public NoteId getId() {
@@ -25,23 +31,49 @@ public class Note {
         return title;
     }
 
-    public NoteContent getContent() {
+    public String getContent() {
         return content;
     }
 
-    public Edition getEditionId() {
-        return edition;
+    public EditionId getEditionId() {
+        return editionId;
     }
 
-    public void updateTitle(String newTitle) {
-        title = newTitle;
+    public NoteStatus getStatus() {
+        return status;
     }
 
-    public void updateContent(NoteContent newContent) {
-        content = newContent;
+    public void updateTitle(String title) {
+        Guard.againstNullOrEmpty(title, "Title cannot be empty");
+        ensureIsOpen();
+        this.title = title;
     }
 
-    public void assignToEdition(Edition edition) {
-        this.edition = edition;
+    public void updateContent(String content) {
+        Guard.againstNullOrEmpty(content, "Content cannot be empty");
+        ensureIsOpen();
+        this.content = content;
+    }
+
+    public void close() {
+        ensureIsOpen();
+        this.status = NoteStatus.CLOSED;
+    }
+
+    public void open() {
+        ensureIsClosed();
+        this.status = NoteStatus.OPEN;
+    }
+
+    private void ensureIsClosed() {
+        if (!status.isClosed()) {
+            throw new IllegalStateException("Note is not closed");
+        }
+    }
+
+    private void ensureIsOpen() {
+        if (!status.isOpen()) {
+            throw new IllegalStateException("Note is closed");
+        }
     }
 }
