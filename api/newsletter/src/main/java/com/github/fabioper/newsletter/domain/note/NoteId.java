@@ -1,11 +1,8 @@
 package com.github.fabioper.newsletter.domain.note;
 
 import com.github.fabioper.newsletter.domain.shared.EntityId;
+import jakarta.persistence.Embeddable;
 
-import java.util.UUID;
-
-public class NoteId extends EntityId<UUID> {
-    public NoteId() {
-        super(UUID.randomUUID());
-    }
+@Embeddable
+public class NoteId extends EntityId {
 }

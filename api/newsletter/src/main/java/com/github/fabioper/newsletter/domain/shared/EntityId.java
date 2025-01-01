@@ -1,15 +1,22 @@
 package com.github.fabioper.newsletter.domain.shared;
 
+import jakarta.persistence.MappedSuperclass;
+
 import java.util.Objects;
+import java.util.UUID;
 
-public abstract class EntityId<TId> {
-    private final TId value;
+@MappedSuperclass
+public abstract class EntityId {
+    private UUID value;
 
-    public EntityId(TId value) {
+    public EntityId() {
+    }
+
+    public EntityId(UUID value) {
         this.value = value;
     }
 
-    public TId getValue() {
+    public UUID getValue() {
         return value;
     }
 

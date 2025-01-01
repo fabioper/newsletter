@@ -2,12 +2,24 @@ package com.github.fabioper.newsletter.domain.note;
 
 import com.github.fabioper.newsletter.domain.edition.EditionId;
 import com.github.fabioper.newsletter.domain.shared.Guard;
+import jakarta.persistence.*;
 
+@Entity
 public class Note {
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
     private NoteId id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Column(nullable = false)
     private String content;
+
+    @Embedded
     private EditionId editionId;
+
+    @Enumerated(EnumType.STRING)
     private NoteStatus status;
 
     public Note() {

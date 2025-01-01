@@ -2,15 +2,26 @@ package com.github.fabioper.newsletter.domain.edition;
 
 import com.github.fabioper.newsletter.domain.note.Note;
 import com.github.fabioper.newsletter.domain.shared.Guard;
+import jakarta.persistence.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+@Entity
 public class Edition {
+    @EmbeddedId
+    @AttributeOverride(name = "value", column = @Column(name = "id"))
     private EditionId id;
+
+    @Column(nullable = false)
     private String title;
+
+    @Enumerated(EnumType.STRING)
     private EditionStatus status;
+
+    @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)
+    @JoinColumn(name = "edition_id")
     private List<Note> notes;
 
     public Edition() {
@@ -19,6 +30,7 @@ public class Edition {
     public Edition(String title) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
 
+        this.id = new EditionId();
         this.title = title;
         this.status = EditionStatus.OPEN;
         this.notes = new ArrayList<>();
