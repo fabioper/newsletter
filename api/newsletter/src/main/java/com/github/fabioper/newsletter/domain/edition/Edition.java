@@ -11,13 +11,13 @@ import java.util.List;
 @Entity
 public class Edition {
     @EmbeddedId
-    @AttributeOverride(name = "value", column = @Column(name = "id"))
     private EditionId id;
 
-    @Column(nullable = false)
+    @Column(nullable = false, length = 150)
     private String title;
 
     @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 40)
     private EditionStatus status;
 
     @OneToMany(orphanRemoval = true, cascade = CascadeType.ALL)

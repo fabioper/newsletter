@@ -7,22 +7,22 @@ import java.util.UUID;
 
 @MappedSuperclass
 public abstract class EntityId {
-    private UUID value;
+    private UUID id;
 
     public EntityId() {
     }
 
     public EntityId(UUID value) {
-        this.value = value;
+        this.id = value;
     }
 
     public UUID getValue() {
-        return value;
+        return id;
     }
 
     @Override
     public String toString() {
-        return value.toString();
+        return id.toString();
     }
 
     @Override
