@@ -85,6 +85,10 @@ public class Edition {
         this.status = EditionStatus.AVAILABLE_FOR_REVIEW;
     }
 
+    public boolean isAvailableForReview() {
+        return status.isAvailableForReview();
+    }
+
     private void ensureIsClosed() {
         if (!status.isClosed()) {
             throw new IllegalStateException("Edition is not closed");
