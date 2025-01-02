@@ -1,6 +1,7 @@
 package com.github.fabioper.newsletter.domain.edition;
 
 import com.github.fabioper.newsletter.domain.note.Note;
+import com.github.fabioper.newsletter.domain.shared.AggregateRoot;
 import com.github.fabioper.newsletter.domain.shared.Guard;
 import jakarta.persistence.*;
 
@@ -9,7 +10,7 @@ import java.util.Collections;
 import java.util.List;
 
 @Entity
-public class Edition {
+public class Edition extends AggregateRoot {
     @EmbeddedId
     private EditionId id;
 

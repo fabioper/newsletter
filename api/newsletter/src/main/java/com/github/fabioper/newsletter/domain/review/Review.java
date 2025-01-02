@@ -2,11 +2,12 @@ package com.github.fabioper.newsletter.domain.review;
 
 import com.github.fabioper.newsletter.domain.edition.Edition;
 import com.github.fabioper.newsletter.domain.edition.EditionId;
+import com.github.fabioper.newsletter.domain.shared.AggregateRoot;
 import com.github.fabioper.newsletter.domain.shared.Guard;
 import jakarta.persistence.*;
 
 @Entity
-public class Review {
+public class Review extends AggregateRoot {
     @EmbeddedId
     private ReviewId id;
 
@@ -32,6 +33,8 @@ public class Review {
         this.editionId = editionId;
         this.reviewerId = reviewerId;
         this.status = ReviewStatus.IN_PROGRESS;
+
+        this.raiseEvent(new ReviewStartedEvent(this.getId()));
     }
 
     public static Review startReviewOf(Edition edition, ReviewerId reviewerId) {
@@ -45,6 +48,7 @@ public class Review {
         return new Review(edition.getId(), reviewerId);
     }
 
+    //region Getters
     public ReviewId getId() {
         return id;
     }
@@ -64,19 +68,27 @@ public class Review {
     public String getComment() {
         return comment;
     }
+    //endregion
 
     public void approve() {
-        if (!status.isInProgress()) {
-            throw new IllegalStateException("Review is not in progress");
-        }
+        ensureIsInProgress();
 
         this.status = ReviewStatus.APPROVED;
+        this.raiseEvent(new ReviewApprovedEvent(this.getId()));
     }
 
     public void deny(String comment) {
         Guard.againstNullOrEmpty(comment, "Comment cannot be empty");
+        ensureIsInProgress();
 
         this.status = ReviewStatus.DENIED;
         this.comment = comment;
+        this.raiseEvent(new ReviewDeniedEvent(this.getId()));
+    }
+
+    private void ensureIsInProgress() {
+        if (!status.isInProgress()) {
+            throw new IllegalStateException("Review is not in progress");
+        }
     }
 }

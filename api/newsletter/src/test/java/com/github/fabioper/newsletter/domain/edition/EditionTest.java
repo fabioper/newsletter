@@ -8,7 +8,6 @@ import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longCo
 import static org.junit.jupiter.api.Assertions.*;
 
 class EditionTest {
-
     @Test
     void shouldCreateEditionWithOpenStatus() {
         var editorId = new EditorId();

@@ -20,6 +20,7 @@ class ReviewTest {
         assertEquals(ReviewStatus.IN_PROGRESS, review.getStatus());
         assertEquals(reviewerId, review.getReviewerId());
         assertNotNull(review.getId());
+        assertTrue(review.getEvents().contains(new ReviewStartedEvent(review.getId())));
     }
 
     @Test
@@ -57,6 +58,7 @@ class ReviewTest {
         review.approve();
 
         assertEquals(ReviewStatus.APPROVED, review.getStatus());
+        assertTrue(review.getEvents().contains(new ReviewApprovedEvent(review.getId())));
     }
 
     @Test
@@ -78,6 +80,18 @@ class ReviewTest {
 
         assertEquals(ReviewStatus.DENIED, review.getStatus());
         assertEquals("This is a comment...", review.getComment());
+        assertTrue(review.getEvents().contains(new ReviewDeniedEvent(review.getId())));
+    }
+
+    @Test
+    void shouldNotDenyReviewIfReviewIsNotInProgress() {
+        var edition = editionAvailableForReview();
+
+        var review = Review.startReviewOf(edition, new ReviewerId());
+        review.approve();
+
+        assertThrows(IllegalStateException.class, () -> review.deny("This is a comment..."));
+        assertFalse(review.getEvents().contains(new ReviewDeniedEvent(review.getId())));
     }
 
     @Test

@@ -1,10 +1,11 @@
 package com.github.fabioper.newsletter.domain.note;
 
+import com.github.fabioper.newsletter.domain.shared.AggregateRoot;
 import com.github.fabioper.newsletter.domain.shared.Guard;
 import jakarta.persistence.*;
 
 @Entity
-public class Note {
+public class Note extends AggregateRoot {
     @EmbeddedId
     private NoteId id;
 
@@ -37,6 +38,7 @@ public class Note {
         this.authorId = authorId;
     }
 
+    //region Getters
     public NoteId getId() {
         return id;
     }
@@ -60,6 +62,7 @@ public class Note {
     public ReadingTime getReadingTime() {
         return ReadingTime.from(content);
     }
+    //endregion
 
     public void updateTitle(String title) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
