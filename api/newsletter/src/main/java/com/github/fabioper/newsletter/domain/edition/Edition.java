@@ -79,7 +79,6 @@ public class Edition {
         ensureIsOpen();
         ensureIsNotEmpty();
         ensureAllNotesAreClosed();
-
         ensureTotalReadingTimeDoesNotExceedLimit();
 
         this.status = EditionStatus.CLOSED;
