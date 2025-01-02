@@ -94,4 +94,8 @@ public class Note {
             throw new IllegalStateException("Note is closed");
         }
     }
+
+    public boolean isClosed() {
+        return status.isClosed();
+    }
 }

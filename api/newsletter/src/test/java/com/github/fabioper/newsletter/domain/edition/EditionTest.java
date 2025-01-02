@@ -62,12 +62,15 @@ class EditionTest {
     void shouldNotAssignNoteToEditionThatIsNotOpen() {
         var edition = new Edition("Edition title", new EditorId());
 
-        edition.assign(new Note("Note title", "Note content", new AuthorId()));
+        var note = new Note("Note title", "Note content", new AuthorId());
+        note.close();
+
+        edition.assign(note);
 
         edition.close();
 
         assertThrows(IllegalStateException.class, () -> {
-            edition.assign(new Note("Note title", "Note content", new AuthorId()));
+            edition.assign(new Note("Other note title", "Note content", new AuthorId()));
         });
     }
 
@@ -75,11 +78,32 @@ class EditionTest {
     void shouldCloseEdition() {
         var edition = new Edition("Edition title", new EditorId());
 
-        edition.assign(new Note("Note title", "Note content", new AuthorId()));
+        var note = new Note("Note title", "Note content", new AuthorId());
+        note.close();
+
+        edition.assign(note);
 
         edition.close();
 
         assertEquals(EditionStatus.CLOSED, edition.getStatus());
+    }
+
+    @Test
+    void shouldNotCloseEditionIfNotAllNotesAreClosed() {
+        var edition = new Edition("Edition title", new EditorId());
+        var note1 = new Note("Title", "Content", new AuthorId());
+        var note2 = new Note("Title", "Content", new AuthorId());
+        var note3 = new Note("Title", "Content", new AuthorId());
+
+        note1.close();
+        note2.close();
+
+        edition.assign(note1);
+        edition.assign(note2);
+        edition.assign(note3);
+
+        assertThrows(IllegalStateException.class, edition::close);
+        assertEquals(EditionStatus.OPEN, edition.getStatus());
     }
 
     @Test
@@ -93,7 +117,9 @@ class EditionTest {
     @Test
     void shouldNotCloseEditionIfItIsNotOpen() {
         var edition = new Edition("Edition title", new EditorId());
-        edition.assign(new Note("Note title", "Note content", new AuthorId()));
+        var note = new Note("Note title", "Note content", new AuthorId());
+        note.close();
+        edition.assign(note);
         edition.close();
 
         assertThrows(IllegalStateException.class, edition::close);
@@ -112,12 +138,35 @@ class EditionTest {
 
     @Test
     void shouldSubmitEditionToReview() {
-        var edition = new Edition("Edition title", new EditorId());
-        edition.assign(new Note("Note title", "Note content", new AuthorId()));
-        edition.close();
-        edition.submitToReview();
+        var edition = createEditionAvailableForReview();
 
         assertEquals(EditionStatus.AVAILABLE_FOR_REVIEW, edition.getStatus());
+    }
+
+    @Test
+    void shouldPutEditionUnderReview() {
+        var edition = createEditionAvailableForReview();
+        edition.putUnderReview();
+        assertEquals(EditionStatus.UNDER_REVIEW, edition.getStatus());
+    }
+
+    @Test
+    void shouldNotPutEditionUnderReviewIfEditionIsNotAvailableForReview() {
+        var edition = new Edition("Title", new EditorId());
+        assertThrows(IllegalStateException.class, edition::putUnderReview);
+        assertEquals(EditionStatus.OPEN, edition.getStatus());
+
+        var note = new Note("Title", "Content", new AuthorId());
+        note.close();
+        edition.assign(note);
+        edition.close();
+
+        assertThrows(IllegalStateException.class, edition::putUnderReview);
+        assertEquals(EditionStatus.CLOSED, edition.getStatus());
+
+        edition.submitToReview();
+        edition.putUnderReview();
+        assertEquals(EditionStatus.UNDER_REVIEW, edition.getStatus());
     }
 
     @Test
@@ -129,10 +178,30 @@ class EditionTest {
     }
 
     @Test
-    void shouldPublishEdition() {
+    void shoudMakeEditionAvailableForPublication() {
+        var edition = createEditionAvailableForReview();
+        edition.putUnderReview();
+        edition.makeAvailableForPublication();
+        assertEquals(EditionStatus.AVAILABLE_FOR_PUBLICATION, edition.getStatus());
     }
 
     @Test
-    void shouldNotPublishEditionIfEditionIsNotApproved() {
+    void shouldNotMakeEditionAvailableForPublicationIfEditionIsNotUnderReview() {
+        var edition = createEditionAvailableForReview();
+        assertThrows(IllegalStateException.class, edition::makeAvailableForPublication);
+        assertEquals(EditionStatus.AVAILABLE_FOR_REVIEW, edition.getStatus());
+    }
+
+    private static Edition createEditionAvailableForReview() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
+        note.close();
+        edition.assign(note);
+
+        edition.close();
+        edition.submitToReview();
+
+        return edition;
     }
 }

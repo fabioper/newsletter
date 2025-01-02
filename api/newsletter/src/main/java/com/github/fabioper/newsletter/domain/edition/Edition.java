@@ -78,6 +78,8 @@ public class Edition {
     public void close() {
         ensureIsOpen();
         ensureIsNotEmpty();
+        ensureAllNotesAreClosed();
+
         ensureTotalReadingTimeDoesNotExceedLimit();
 
         this.status = EditionStatus.CLOSED;
@@ -100,6 +102,34 @@ public class Edition {
 
     public boolean isAvailableForReview() {
         return status.isAvailableForReview();
+    }
+
+    public void putUnderReview() {
+        ensureIsAvailableForReview();
+        this.status = EditionStatus.UNDER_REVIEW;
+    }
+
+    public void makeAvailableForPublication() {
+        ensureIsUnderReview();
+        this.status = EditionStatus.AVAILABLE_FOR_PUBLICATION;
+    }
+
+    private void ensureAllNotesAreClosed() {
+        if (!notes.stream().filter(note -> !note.isClosed()).toList().isEmpty()) {
+            throw new IllegalStateException("There are open notes");
+        }
+    }
+
+    private void ensureIsUnderReview() {
+        if (!status.isUnderReview()) {
+            throw new IllegalStateException("Edition is not under preview");
+        }
+    }
+
+    private void ensureIsAvailableForReview() {
+        if (!status.isAvailableForReview()) {
+            throw new IllegalStateException("Edition is not available for review");
+        }
     }
 
     private void ensureIsClosed() {

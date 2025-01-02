@@ -27,7 +27,9 @@ class ReviewTest {
         var edition = new Edition("Title", new EditorId());
         assertThrows(IllegalStateException.class, () -> Review.startReviewOf(edition, new ReviewerId()));
 
-        edition.assign(new Note("Title", "Content", new AuthorId()));
+        var note = new Note("Title", "Content", new AuthorId());
+        note.close();
+        edition.assign(note);
         edition.close();
 
         assertThrows(IllegalStateException.class, () -> Review.startReviewOf(edition, new ReviewerId()));
@@ -94,7 +96,9 @@ class ReviewTest {
     private static Edition editionAvailableForReview() {
         var edition = new Edition("Title", new EditorId());
 
-        edition.assign(new Note("Title", "Content", new AuthorId()));
+        var note = new Note("Title", "Content", new AuthorId());
+        note.close();
+        edition.assign(note);
         edition.close();
         edition.submitToReview();
 
