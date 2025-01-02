@@ -98,4 +98,8 @@ public class Note {
     public boolean isClosed() {
         return status.isClosed();
     }
+
+    public boolean isOpen() {
+        return status.isOpen();
+    }
 }

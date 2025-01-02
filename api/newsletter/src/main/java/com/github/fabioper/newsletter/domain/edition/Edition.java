@@ -73,7 +73,18 @@ public class Edition {
 
     public void assign(Note note) {
         ensureIsOpen();
+        ensureIsOpen(note);
+        ensureNoteIsNotDuplicated(note);
+
         this.notes.add(note);
+    }
+
+    public void unassign(Note note) {
+        ensureIsOpen();
+        ensureIsOpen(note);
+        ensureNoteIsPresent(note);
+
+        this.notes.remove(note);
     }
 
     public void close() {
@@ -108,6 +119,18 @@ public class Edition {
         return notes.stream().mapToInt(note -> note.getReadingTime().getMinutes()).sum();
     }
 
+    private void ensureNoteIsPresent(Note note) {
+        if (!notes.contains(note)) {
+            throw new IllegalArgumentException("Note do not belong to edition");
+        }
+    }
+
+    private void ensureNoteIsNotDuplicated(Note note) {
+        if (notes.contains(note)) {
+            throw new IllegalArgumentException("Note is alredy assigned to edition");
+        }
+    }
+
     private void ensureTotalReadingTimeDoesNotExceedLimit() {
         if (getTotalReadingTime() > TOTAL_READING_TIME_LIMIT) {
             throw new IllegalStateException("Total reading time exceeds limit");
@@ -135,6 +158,12 @@ public class Edition {
     private void ensureIsClosed() {
         if (!status.isClosed()) {
             throw new IllegalStateException("Edition is not closed");
+        }
+    }
+
+    private static void ensureIsOpen(Note note) {
+        if (!note.isOpen()) {
+            throw new IllegalStateException("Note is not open");
         }
     }
 

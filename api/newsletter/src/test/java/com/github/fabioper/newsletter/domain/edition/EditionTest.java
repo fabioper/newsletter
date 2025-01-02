@@ -62,9 +62,9 @@ class EditionTest {
         var edition = new Edition("Edition title", new EditorId());
 
         var note = new Note("Note title", "Note content", new AuthorId());
-        note.close();
 
         edition.assign(note);
+        note.close();
 
         edition.close();
 
@@ -74,13 +74,88 @@ class EditionTest {
     }
 
     @Test
-    void shouldCloseEdition() {
+    void shouldNotAssignNoteToEditionIfNoteIsNotOpen() {
         var edition = new Edition("Edition title", new EditorId());
 
         var note = new Note("Note title", "Note content", new AuthorId());
         note.close();
 
+        assertThrows(IllegalStateException.class, () -> edition.assign(note));
+        assertFalse(edition.getNotes().contains(note));
+    }
+
+    @Test
+    void shouldNotAssignDuplicatedNotes() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
         edition.assign(note);
+        assertThrows(IllegalArgumentException.class, () -> edition.assign(note));
+        assertEquals(1, edition.getNotes().stream().filter(n -> n.equals(note)).count());
+    }
+
+    @Test
+    void shouldUnassignNote() {
+        var edition = new Edition("Edition title", new EditorId());
+        var note = new Note("Note title", "Note content", new AuthorId());
+        var note2 = new Note("Note title 2", "Note content", new AuthorId());
+        edition.assign(note);
+        edition.assign(note2);
+        edition.unassign(note);
+
+        assertEquals(1, edition.getNotes().size());
+        assertFalse(edition.getNotes().contains(note));
+        assertTrue(edition.getNotes().contains(note2));
+    }
+
+    @Test
+    void shouldNotUnassignNoteFromEditionThatIsNotOpen() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
+
+        edition.assign(note);
+        note.close();
+
+        assertThrows(IllegalStateException.class, () -> edition.unassign(note));
+        assertTrue(edition.getNotes().contains(note));
+    }
+
+    @Test
+    void shouldNotUnassignNoteThatDoNotBelongToEdition() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
+        var note2 = new Note("Note title", "Note content", new AuthorId());
+
+        edition.assign(note);
+
+        assertThrows(IllegalArgumentException.class, () -> edition.unassign(note2));
+        assertTrue(edition.getNotes().contains(note));
+        assertFalse(edition.getNotes().contains(note2));
+    }
+
+    @Test
+    void shouldNotUnassignNoteFromEditionIfNoteIsNotOpen() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
+        edition.assign(note);
+        note.close();
+
+        assertThrows(IllegalStateException.class, () -> edition.unassign(note));
+        assertTrue(edition.getNotes().contains(note));
+    }
+
+    @Test
+    void shouldCloseEdition() {
+        var edition = new Edition("Edition title", new EditorId());
+
+        var note = new Note("Note title", "Note content", new AuthorId());
+
+        edition.assign(note);
+
+        note.close();
 
         edition.close();
 
@@ -94,12 +169,12 @@ class EditionTest {
         var note2 = new Note("Title", "Content", new AuthorId());
         var note3 = new Note("Title", "Content", new AuthorId());
 
-        note1.close();
-        note2.close();
-
         edition.assign(note1);
         edition.assign(note2);
         edition.assign(note3);
+
+        note1.close();
+        note2.close();
 
         assertThrows(IllegalStateException.class, edition::close);
         assertEquals(EditionStatus.OPEN, edition.getStatus());
@@ -121,8 +196,8 @@ class EditionTest {
     void shouldNotCloseEditionIfItIsNotOpen() {
         var edition = new Edition("Edition title", new EditorId());
         var note = new Note("Note title", "Note content", new AuthorId());
-        note.close();
         edition.assign(note);
+        note.close();
         edition.close();
 
         assertThrows(IllegalStateException.class, edition::close);
@@ -160,8 +235,8 @@ class EditionTest {
         assertEquals(EditionStatus.OPEN, edition.getStatus());
 
         var note = new Note("Title", "Content", new AuthorId());
-        note.close();
         edition.assign(note);
+        note.close();
         edition.close();
 
         assertThrows(IllegalStateException.class, edition::putUnderReview);
@@ -199,8 +274,8 @@ class EditionTest {
         var edition = new Edition("Edition title", new EditorId());
 
         var note = new Note("Note title", "Note content", new AuthorId());
-        note.close();
         edition.assign(note);
+        note.close();
 
         edition.close();
         edition.submitToReview();

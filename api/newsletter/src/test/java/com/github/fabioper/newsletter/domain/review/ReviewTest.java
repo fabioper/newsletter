@@ -28,8 +28,8 @@ class ReviewTest {
         assertThrows(IllegalStateException.class, () -> Review.startReviewOf(edition, new ReviewerId()));
 
         var note = new Note("Title", "Content", new AuthorId());
-        note.close();
         edition.assign(note);
+        note.close();
         edition.close();
 
         assertThrows(IllegalStateException.class, () -> Review.startReviewOf(edition, new ReviewerId()));
@@ -97,8 +97,8 @@ class ReviewTest {
         var edition = new Edition("Title", new EditorId());
 
         var note = new Note("Title", "Content", new AuthorId());
-        note.close();
         edition.assign(note);
+        note.close();
         edition.close();
         edition.submitToReview();
 
