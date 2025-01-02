@@ -44,6 +44,7 @@ public class Edition {
         this.editorId = editorId;
     }
 
+    //region Getters
     public EditionId getId() {
         return id;
     }
@@ -63,10 +64,10 @@ public class Edition {
     public EditorId getEditorId() {
         return editorId;
     }
+    //endregion
 
     public void updateTitle(String title) {
         Guard.againstNullOrEmpty(title, "Title cannot be empty");
-
         this.title = title;
     }
 
@@ -82,16 +83,6 @@ public class Edition {
         ensureTotalReadingTimeDoesNotExceedLimit();
 
         this.status = EditionStatus.CLOSED;
-    }
-
-    private int getTotalReadingTime() {
-        return notes.stream().mapToInt(note -> note.getReadingTime().getMinutes()).sum();
-    }
-
-    private void ensureTotalReadingTimeDoesNotExceedLimit() {
-        if (getTotalReadingTime() > TOTAL_READING_TIME_LIMIT) {
-            throw new IllegalStateException("Total reading time exceeds limit");
-        }
     }
 
     public void submitToReview() {
@@ -113,8 +104,18 @@ public class Edition {
         this.status = EditionStatus.AVAILABLE_FOR_PUBLICATION;
     }
 
+    private int getTotalReadingTime() {
+        return notes.stream().mapToInt(note -> note.getReadingTime().getMinutes()).sum();
+    }
+
+    private void ensureTotalReadingTimeDoesNotExceedLimit() {
+        if (getTotalReadingTime() > TOTAL_READING_TIME_LIMIT) {
+            throw new IllegalStateException("Total reading time exceeds limit");
+        }
+    }
+
     private void ensureAllNotesAreClosed() {
-        if (!notes.stream().filter(note -> !note.isClosed()).toList().isEmpty()) {
+        if (!notes.stream().allMatch(Note::isClosed)) {
             throw new IllegalStateException("There are open notes");
         }
     }

@@ -5,8 +5,7 @@ import com.github.fabioper.newsletter.domain.note.Note;
 import org.junit.jupiter.api.Test;
 
 import static com.github.fabioper.newsletter.testdata.NoteContentTestData.longContent;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 
 class EditionTest {
 
@@ -89,7 +88,7 @@ class EditionTest {
     }
 
     @Test
-    void shouldNotCloseEditionIfNotAllNotesAreClosed() {
+    void shouldNotCloseEditionUntilAllNotesAreClosed() {
         var edition = new Edition("Edition title", new EditorId());
         var note1 = new Note("Title", "Content", new AuthorId());
         var note2 = new Note("Title", "Content", new AuthorId());
@@ -104,6 +103,10 @@ class EditionTest {
 
         assertThrows(IllegalStateException.class, edition::close);
         assertEquals(EditionStatus.OPEN, edition.getStatus());
+
+        note3.close();
+        assertDoesNotThrow(edition::close);
+        assertEquals(EditionStatus.CLOSED, edition.getStatus());
     }
 
     @Test
