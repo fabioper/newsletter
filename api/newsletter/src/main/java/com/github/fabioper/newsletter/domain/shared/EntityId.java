@@ -7,12 +7,9 @@ import java.util.UUID;
 
 @MappedSuperclass
 public abstract class EntityId {
-    private UUID id;
+    private final UUID id;
 
-    public EntityId() {
-    }
-
-    public EntityId(UUID value) {
+    protected EntityId(UUID value) {
         this.id = value;
     }
 
