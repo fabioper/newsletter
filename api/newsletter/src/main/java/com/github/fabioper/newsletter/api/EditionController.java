@@ -3,6 +3,7 @@ package com.github.fabioper.newsletter.api;
 import com.github.fabioper.newsletter.application.dto.CreateEditionRequest;
 import com.github.fabioper.newsletter.application.dto.EditionResponse;
 import com.github.fabioper.newsletter.application.services.EditionService;
+import com.github.fabioper.newsletter.infra.security.annotations.EditorOnly;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.jwt.Jwt;
 import org.springframework.web.bind.annotation.*;
@@ -18,14 +19,15 @@ public class EditionController {
         this.editionService = editionService;
     }
 
+    @EditorOnly
     @GetMapping
     public List<EditionResponse> listEditions() {
         return this.editionService.getAllEditions();
     }
 
+    @EditorOnly
     @PostMapping
     public EditionResponse createEdition(@RequestBody CreateEditionRequest dto, @AuthenticationPrincipal Jwt jwt) {
-        var loggedUserId = jwt.getSubject();
-        return this.editionService.createEdition(dto, loggedUserId);
+        return this.editionService.createEdition(dto, jwt.getSubject());
     }
 }

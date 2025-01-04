@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.infra.config;
+package com.github.fabioper.newsletter.infra.security.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

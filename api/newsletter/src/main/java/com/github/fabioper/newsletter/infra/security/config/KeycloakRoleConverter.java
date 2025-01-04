@@ -1,4 +1,4 @@
-package com.github.fabioper.newsletter.infra.config;
+package com.github.fabioper.newsletter.infra.security.config;
 
 import org.springframework.core.convert.converter.Converter;
 import org.springframework.security.core.GrantedAuthority;
