@@ -116,6 +116,11 @@ public class Edition extends AggregateRoot {
         this.status = EditionStatus.AVAILABLE_FOR_PUBLICATION;
     }
 
+    public void reopen() {
+        ensureItCanBeReopened();
+        this.status = EditionStatus.OPEN;
+    }
+
     private int getTotalReadingTime() {
         return notes.stream().mapToInt(note -> note.getReadingTime().getMinutes()).sum();
     }
@@ -177,6 +182,12 @@ public class Edition extends AggregateRoot {
     private void ensureIsNotEmpty() {
         if (notes.isEmpty()) {
             throw new IllegalStateException("Edition cannot be closed");
+        }
+    }
+
+    private void ensureItCanBeReopened() {
+        if (!status.isClosed() || !status.isUnderReview()) {
+            throw new IllegalStateException("Edition cannot be reopened");
         }
     }
 }
